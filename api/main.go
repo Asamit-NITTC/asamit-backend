@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/Asamit-NITTC/asamit-backend-test/router"
+)
 
 func main() {
-	fmt.Println("Hello,World")
+	r := router.NewRouter()
+	r.Run(":8080")
 }

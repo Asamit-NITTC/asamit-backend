@@ -4,6 +4,7 @@ import "github.com/Asamit-NITTC/asamit-backend-test/db"
 
 func MigrateDB() {
 	db.DB.AutoMigrate(&Users{})
+	db.DB.AutoMigrate(&WakeUpTime{})
 }
 
 func InsertDummyData() {

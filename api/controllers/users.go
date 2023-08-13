@@ -21,3 +21,19 @@ func (u UsersController) Show(c *gin.Context) {
 	c.JSON(http.StatusOK, userInfo)
 	return
 }
+
+func (u UsersController) Register(c *gin.Context) {
+	var registerInfo models.Users
+	err := c.ShouldBindJSON(&registerInfo)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
+	}
+	err = usersModel.SetUserInfo(&registerInfo)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
+	}
+	c.JSON(http.StatusOK, registerInfo)
+	return
+}

@@ -20,3 +20,11 @@ func (u UsersModel) GetUserInfo(uid string) (Users, error) {
 	}
 	return userInfo, nil
 }
+
+func (u UsersModel) SetUserInfo(us *Users) error {
+	err := db.DB.Save(&us).Where("uid = ?", us.UID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

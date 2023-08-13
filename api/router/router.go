@@ -19,6 +19,7 @@ func NewRouter() *gin.Engine {
 	{
 		u := new(controllers.UsersController)
 		users.GET("/:uid", u.Show)
+		users.POST("/register", u.Register)
 	}
 
 	return r

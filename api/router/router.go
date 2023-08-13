@@ -2,23 +2,25 @@ package router
 
 import (
 	"github.com/Asamit-NITTC/asamit-backend-test/controllers"
+	"github.com/Asamit-NITTC/asamit-backend-test/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func NewRouter() *gin.Engine {
 
-	router := gin.Default()
+	r := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
-	router.Use(cors.New(config))
+	r.Use(cors.New(config))
+	r.Use(middleware.ErrorHandler())
 
-	users := router.Group("users")
+	users := r.Group("users")
 	{
-		u := new(controllers.Users)
-		users.GET("/register", u.Register)
+		u := new(controllers.UsersController)
+		users.GET("/:uid", u.Show)
 	}
 
-	return router
+	return r
 
 }

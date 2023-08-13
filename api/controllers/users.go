@@ -3,11 +3,21 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/gin-gonic/gin"
 )
 
-type Users struct{}
+type UsersController struct{}
 
-func (u Users) Register(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "Hello,World!"})
+var usersModel = new(models.UsersModel)
+
+func (u UsersController) Show(c *gin.Context) {
+	uid := c.Param("uid")
+	userInfo, err := usersModel.GetUserInfo(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
+	}
+	c.JSON(http.StatusOK, userInfo)
+	return
 }

@@ -6,16 +6,16 @@ import (
 	"github.com/Asamit-NITTC/asamit-backend-test/db"
 )
 
-type WakeUpTime struct {
+type TargetTime struct {
 	UserUID    string `json:"uid" gorm:"primaryKey;size:256"`
 	TargetTime string `json:"targetTime"`
 	Updated    int64  `json:"updated" gorm:"autoUpdateTime:nano"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
-type WakeModel struct{}
+type TargetTimeModel struct{}
 
-func (w WakeModel) Set(wt WakeUpTime) error {
+func (t TargetTimeModel) Set(wt TargetTime) error {
 	_, err := time.Parse(time.RFC3339, wt.TargetTime)
 	if err != nil {
 		return err

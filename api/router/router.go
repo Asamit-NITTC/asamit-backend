@@ -22,10 +22,10 @@ func NewRouter() *gin.Engine {
 		users.POST("/register", u.Register)
 	}
 
-	wake := r.Group("wake-up-time")
+	targetTime := r.Group("target-time")
 	{
-		w := new(controllers.WakeController)
-		wake.PUT("/set", w.Set)
+		t := new(controllers.TargetTimeController)
+		targetTime.PUT("/set", t.Set)
 	}
 	return r
 

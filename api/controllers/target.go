@@ -7,18 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type WakeController struct{}
+type TargetTimeController struct{}
 
-var wakeModel = new(models.WakeModel)
+var targetTimeModel = new(models.TargetTimeModel)
 
-func (w WakeController) Set(c *gin.Context) {
-	var registerInfo models.WakeUpTime
+func (t TargetTimeController) Set(c *gin.Context) {
+	var registerInfo models.TargetTime
 	err := c.ShouldBindJSON(&registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
-	err = wakeModel.Set(registerInfo)
+	err = targetTimeModel.Set(registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return

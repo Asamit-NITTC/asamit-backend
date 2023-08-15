@@ -23,7 +23,7 @@ func (u UsersController) Show(c *gin.Context) {
 }
 
 func (u UsersController) Register(c *gin.Context) {
-	var registerInfo models.Users
+	var registerInfo models.User
 	err := c.ShouldBindJSON(&registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)

@@ -8,9 +8,9 @@ import (
 
 type WakeUpTime struct {
 	//UID        []Users `json:"uid" gorm:"foreignKey:UID"`
-	UID        []Users `json:"uid"`
-	TargetTime string  `json:"targetTime" `
-	Updated    int64   `json:"updated" gorm:"autoUpdateTime:nano"`
+	UID        []User `json:"uid"`
+	TargetTime string `json:"targetTime" `
+	Updated    int64  `json:"updated" gorm:"autoUpdateTime:nano"`
 }
 
 type WakeModel struct{}

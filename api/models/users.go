@@ -2,7 +2,7 @@ package models
 
 import "github.com/Asamit-NITTC/asamit-backend-test/db"
 
-type Users struct {
+type User struct {
 	UID      string `json:"uid" gorm:"primaryKey"`
 	Name     string `json:"name" binding:"required"`
 	Icon     string `json:"icon"`
@@ -12,8 +12,8 @@ type Users struct {
 
 type UsersModel struct{}
 
-func (u UsersModel) GetUserInfo(uid string) (Users, error) {
-	var userInfo Users
+func (u UsersModel) GetUserInfo(uid string) (User, error) {
+	var userInfo User
 	err := db.DB.First(&userInfo, "uid = ?", uid).Error
 	if err != nil {
 		return userInfo, err
@@ -21,7 +21,7 @@ func (u UsersModel) GetUserInfo(uid string) (Users, error) {
 	return userInfo, nil
 }
 
-func (u UsersModel) SetUserInfo(us *Users) error {
+func (u UsersModel) SetUserInfo(us *User) error {
 	err := db.DB.Save(&us).Where("uid = ?", us.UID).Error
 	if err != nil {
 		return err

@@ -7,10 +7,10 @@ import (
 )
 
 type WakeUpTime struct {
-	//UID        []Users `json:"uid" gorm:"foreignKey:UID"`
-	UID        []User `json:"uid"`
+	UserUID    string `json:"uid" gorm:"primaryKey;size:256"`
 	TargetTime string `json:"targetTime" `
 	Updated    int64  `json:"updated" gorm:"autoUpdateTime:nano"`
+	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 type WakeModel struct{}
@@ -20,7 +20,7 @@ func (w WakeModel) Set(wt WakeUpTime) error {
 	if err != nil {
 		return err
 	}
-	err = db.DB.Save(&wt).Where("uid = ?", wt.UID).Error
+	err = db.DB.Save(&wt).Where("uid = ?", wt.UserUID).Error
 	if err != nil {
 		return err
 	}

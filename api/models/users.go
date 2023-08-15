@@ -3,7 +3,7 @@ package models
 import "github.com/Asamit-NITTC/asamit-backend-test/db"
 
 type User struct {
-	UID      string `json:"uid" gorm:"primaryKey"`
+	UID      string `json:"uid" gorm:"primaryKey;size:256"`
 	Name     string `json:"name" binding:"required"`
 	Icon     string `json:"icon"`
 	Point    int    `json:"point"`

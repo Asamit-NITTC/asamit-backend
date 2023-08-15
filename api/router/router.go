@@ -25,7 +25,7 @@ func NewRouter() *gin.Engine {
 	wake := r.Group("wake-up-time")
 	{
 		w := new(controllers.WakeController)
-		wake.PUT("/register", w.Register)
+		wake.PUT("/set", w.Set)
 	}
 	return r
 

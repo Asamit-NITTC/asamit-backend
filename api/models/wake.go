@@ -8,7 +8,7 @@ import (
 
 type WakeUpTime struct {
 	UserUID    string `json:"uid" gorm:"primaryKey;size:256"`
-	TargetTime string `json:"targetTime" `
+	TargetTime string `json:"targetTime"`
 	Updated    int64  `json:"updated" gorm:"autoUpdateTime:nano"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }

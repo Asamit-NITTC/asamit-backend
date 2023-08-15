@@ -11,7 +11,7 @@ type WakeController struct{}
 
 var wakeModel = new(models.WakeModel)
 
-func (w WakeController) Register(c *gin.Context) {
+func (w WakeController) Set(c *gin.Context) {
 	var registerInfo models.WakeUpTime
 	err := c.ShouldBindJSON(&registerInfo)
 	if err != nil {

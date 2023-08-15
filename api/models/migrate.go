@@ -3,7 +3,7 @@ package models
 import "github.com/Asamit-NITTC/asamit-backend-test/db"
 
 func MigrateDB() {
-	db.DB.AutoMigrate(&User{}, &TargetTime{})
+	db.DB.AutoMigrate(&User{}, &TargetTime{}, &Wake{})
 }
 
 func InsertDummyData() {

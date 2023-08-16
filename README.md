@@ -2,7 +2,7 @@
 
 ## Overview
 
-第34回 高専プロコン作品 Asamit！の試験用バックエンド
+第 34 回 高専プロコン作品 Asamit！の試験用バックエンド
 
 ## Requirement
 
@@ -71,6 +71,12 @@ docker-compose up -d
 ```
 docker-compose exec api go run main.go
 ```
+
+## DB
+
+暫定
+
+<img src="./README_FILES/er.png" width="100%">
 
 ## Author
 

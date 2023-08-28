@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,11 +9,13 @@ import (
 func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
-
 		err := c.Errors.ByType(gin.ErrorTypePublic).Last()
 		if err != nil {
-			log.Print(err.Err)
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			log.Println(err)
+			apierror := err.Meta.(APIError)
+			c.AbortWithStatusJSON(apierror.StatusCode, gin.H{
+				"error": apierror.ErrorMessage,
+			})
 		}
 	}
 }

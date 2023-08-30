@@ -1,14 +1,16 @@
 package models
 
-import "github.com/Asamit-NITTC/asamit-backend-test/db"
+import (
+	"gorm.io/gorm"
+)
 
-func MigrateDB() {
-	db.DB.AutoMigrate(&User{}, &TargetTime{}, &Wake{})
+func MigrateDB(db *gorm.DB) {
+	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{})
 }
 
-func InsertDummyData() {
+func InsertDummyData(db *gorm.DB) {
 	var users = []User{
 		{UID: "33u@2", Name: "GoRuGoo", Icon: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Original_Doge_meme.jpg/300px-Original_Doge_meme.jpg", Point: 32, Duration: 5},
 	}
-	db.DB.Save(&users)
+	db.Save(&users)
 }

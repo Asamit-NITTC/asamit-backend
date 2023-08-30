@@ -1,6 +1,8 @@
 package models
 
-import "github.com/Asamit-NITTC/asamit-backend-test/db"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	UID      string `json:"uid" gorm:"primaryKey;size:256"`
@@ -10,19 +12,30 @@ type User struct {
 	Duration int    `json:"duration"`
 }
 
-type UsersModel struct{}
+type UserRepo struct {
+	repo *gorm.DB
+}
 
-func (u UsersModel) GetUserInfo(uid string) (User, error) {
+func InitalizeUserRepo(repo *gorm.DB) *UserRepo {
+	return &UserRepo{repo: repo}
+}
+
+type UserModel interface {
+	GetUserInfo(uid string) (User, error)
+	SetUserInfo(us *User) error
+}
+
+func (u UserRepo) GetUserInfo(uid string) (User, error) {
 	var userInfo User
-	err := db.DB.First(&userInfo, "uid = ?", uid).Error
+	err := u.repo.First(&userInfo, "uid = ?", uid).Error
 	if err != nil {
 		return userInfo, err
 	}
 	return userInfo, nil
 }
 
-func (u UsersModel) SetUserInfo(us *User) error {
-	err := db.DB.Save(&us).Where("uid = ?", us.UID).Error
+func (u UserRepo) SetUserInfo(us *User) error {
+	err := u.repo.Save(&us).Where("uid = ?", us.UID).Error
 	if err != nil {
 		return err
 	}

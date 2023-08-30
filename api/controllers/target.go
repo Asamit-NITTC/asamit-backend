@@ -7,9 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TargetTimeController struct{}
+type TargetTimeController struct {
+	targetTimeModel models.TargetTimeModel
+}
 
-var targetTimeModel = new(models.TargetTimeModel)
+func InitalizeTargetTimeController(t models.TargetTimeModel) *TargetTimeController {
+	return &TargetTimeController{targetTimeModel: t}
+}
 
 func (t TargetTimeController) Set(c *gin.Context) {
 	var registerInfo models.TargetTime
@@ -18,7 +22,7 @@ func (t TargetTimeController) Set(c *gin.Context) {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
-	err = targetTimeModel.Set(registerInfo)
+	err = t.targetTimeModel.Set(registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return

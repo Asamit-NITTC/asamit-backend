@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/Asamit-NITTC/asamit-backend-test/db"
+	"gorm.io/gorm"
 )
 
 type TargetTime struct {
@@ -13,14 +13,24 @@ type TargetTime struct {
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
-type TargetTimeModel struct{}
+type TargetTimeRepo struct {
+	db *gorm.DB
+}
 
-func (t TargetTimeModel) Set(wt TargetTime) error {
+func InitializeTargetRepo(db *gorm.DB) *TargetTimeRepo {
+	return &TargetTimeRepo{db: db}
+}
+
+type TargetTimeModel interface {
+	Set(wt TargetTime) error
+}
+
+func (t TargetTimeRepo) Set(wt TargetTime) error {
 	_, err := time.Parse(time.RFC3339, wt.TargetTime)
 	if err != nil {
 		return err
 	}
-	err = db.DB.Save(&wt).Where("uid = ?", wt.UserUID).Error
+	err = t.db.Save(&wt).Where("uid = ?", wt.UserUID).Error
 	if err != nil {
 		return err
 	}

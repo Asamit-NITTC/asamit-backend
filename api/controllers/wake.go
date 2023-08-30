@@ -7,9 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type WakeController struct{}
+type WakeController struct {
+	wakeModel models.WakeModel
+}
 
-var wakeModel = new(models.WakeModel)
+func InitializeWakeController(w models.WakeModel) *WakeController {
+	return &WakeController{wakeModel: w}
+}
 
 func (w WakeController) Report(c *gin.Context) {
 	var wakeUpInfo models.Wake
@@ -18,7 +22,7 @@ func (w WakeController) Report(c *gin.Context) {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
-	err = wakeModel.Report(wakeUpInfo)
+	err = w.wakeModel.Report(wakeUpInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return

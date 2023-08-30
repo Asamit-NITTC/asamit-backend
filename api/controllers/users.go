@@ -7,13 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UsersController struct{}
+type UserController struct {
+	userModel models.UserModel
+}
 
-var usersModel = new(models.UsersModel)
+func InitializeUserController(u models.UserModel) *UserController {
+	return &UserController{userModel: u}
+}
 
-func (u UsersController) Show(c *gin.Context) {
+func (u UserController) Show(c *gin.Context) {
 	uid := c.Param("uid")
-	userInfo, err := usersModel.GetUserInfo(uid)
+	userInfo, err := u.userModel.GetUserInfo(uid)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
@@ -22,14 +26,14 @@ func (u UsersController) Show(c *gin.Context) {
 	return
 }
 
-func (u UsersController) Register(c *gin.Context) {
+func (u UserController) Register(c *gin.Context) {
 	var registerInfo models.User
 	err := c.ShouldBindJSON(&registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
-	err = usersModel.SetUserInfo(&registerInfo)
+	err = u.userModel.SetUserInfo(&registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return

@@ -7,9 +7,10 @@ import (
 )
 
 func main() {
-	r := router.NewRouter()
-	db.InitalizeDB()
-	models.MigrateDB()
-	models.InsertDummyData()
+	db, sqlDB := db.InitalizeDB()
+	defer sqlDB.Close()
+	r := router.NewRouter(db)
+	models.MigrateDB(db)
+	models.InsertDummyData(db)
 	r.Run(":8080")
 }

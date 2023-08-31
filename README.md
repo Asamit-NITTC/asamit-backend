@@ -76,7 +76,8 @@ docker-compose exec api go run main.go
 
 暫定
 
-<img src="./README_FILES/er.png" width="100%">
+![er](https://github.com/Asamit-NITTC/asamit-backend/assets/89027827/f78a8e68-c3fb-42a5-a5cc-d3fdd71cd3fe)
+
 
 ## Author
 

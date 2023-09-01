@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
@@ -16,6 +17,16 @@ func InitializeUserController(u models.UserModel) *UserController {
 }
 
 func (u UserController) Show(c *gin.Context) {
+	sub, exist := c.Get("sub")
+	if !exist {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"err": "err"})
+		return
+	}
+
+	fmt.Println("oooooooooooooooooooooooooooooooooooooo")
+	fmt.Println(sub)
+	fmt.Println("oooooooooooooooooooooooooooooooooooooo")
+
 	uid := c.Param("uid")
 	userInfo, err := u.userModel.GetUserInfo(uid)
 	if err != nil {

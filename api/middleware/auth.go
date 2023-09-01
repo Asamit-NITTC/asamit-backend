@@ -1,11 +1,20 @@
 package middleware
 
 import (
+	"encoding/json"
+	"io"
+	"log"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
+
+type responseBody struct {
+	Sub string `json:"sub"`
+}
 
 func AuthHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -28,5 +37,41 @@ func AuthHandler() gin.HandlerFunc {
 			return
 		}
 
+		v := url.Values{}
+		v.Set("id_token", token)
+		v.Set("client_id", os.Getenv("CLIENT_ID"))
+
+		response, err := http.PostForm("https://api.line.me/oauth2/v2.1/verify", v)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
+				"code":    http.StatusVariantAlsoNegotiates,
+				"message": "Connection error with LINE server",
+			})
+			return
+		}
+
+		responseBodyBytes, err := io.ReadAll(response.Body)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
+				"code":    http.StatusVariantAlsoNegotiates,
+				"message": "Middleware error",
+			})
+			return
+		}
+
+		var responseJSON responseBody
+		err = json.Unmarshal(responseBodyBytes, &responseJSON)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
+				"code":    http.StatusVariantAlsoNegotiates,
+				"message": "JSON parse error",
+			})
+			log.Fatal(err)
+			return
+		}
+
+		sub := responseJSON.Sub
+		c.Set("sub", sub)
+		c.Next()
 	}
 }

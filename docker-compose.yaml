@@ -17,5 +17,7 @@ services:
       - ./api:/go/src/api
     ports:
       - '8080:8080'
+    env_file:
+      - authenv.env
 volumes:
   mysql-data:

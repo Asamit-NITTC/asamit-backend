@@ -3,20 +3,28 @@ package middleware
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 
+	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/gin-gonic/gin"
 )
+
+type AuthMiddleware struct {
+	checkI models.AuthModel
+}
+
+func InitializeAuthController(am models.AuthModel) *AuthMiddleware {
+	return &AuthMiddleware{checkI: am}
+}
 
 type responseBody struct {
 	Sub string `json:"sub"`
 }
 
-func AuthHandler() gin.HandlerFunc {
+func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenWithBearer := c.GetHeader("Authorization")
 		if tokenWithBearer == "" {
@@ -66,12 +74,22 @@ func AuthHandler() gin.HandlerFunc {
 				"code":    http.StatusVariantAlsoNegotiates,
 				"message": "JSON parse error",
 			})
-			log.Fatal(err)
 			return
 		}
 
 		sub := responseJSON.Sub
 		c.Set("sub", sub)
+
+		subIsValid, err := a.checkI.CheckSubIsValid(sub)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
+				"code":    http.StatusVariantAlsoNegotiates,
+				"message": "sub check error",
+			})
+			return
+		}
+
+		c.Set("subIsValid", subIsValid)
 		c.Next()
 	}
 }

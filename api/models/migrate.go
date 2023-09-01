@@ -10,7 +10,7 @@ func MigrateDB(db *gorm.DB) {
 
 func InsertDummyData(db *gorm.DB) {
 	var users = []User{
-		{UID: "33u@2", Name: "GoRuGoo", Icon: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Original_Doge_meme.jpg/300px-Original_Doge_meme.jpg", Point: 32, Duration: 5},
+		{UID: "33u@2", Sub: "", Name: "GoRuGoo", Icon: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Original_Doge_meme.jpg/300px-Original_Doge_meme.jpg", Point: 32, Duration: 5},
 	}
 	db.Save(&users)
 }

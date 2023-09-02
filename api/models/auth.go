@@ -17,8 +17,8 @@ type AuthModel interface {
 }
 
 func (u AuthRepo) CheckSubIsValid(sub string) (bool, error) {
-	var test User
-	result := u.repo.Where("sub = ?", sub).Where(&test)
+	var user User
+	result := u.repo.Where("sub = ?", sub).Where(&user)
 	if result.Error != nil {
 		return false, result.Error
 	}

@@ -33,6 +33,9 @@ func (u UserController) Show(c *gin.Context) {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
+
+	userInfo.Sub = ""
+
 	c.JSON(http.StatusOK, userInfo)
 	return
 }

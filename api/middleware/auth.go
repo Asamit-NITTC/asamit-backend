@@ -35,6 +35,7 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 			return
 		}
 
+		// Bearerを削除
 		token := strings.ReplaceAll(tokenWithBearer, "Bearer ", "")
 
 		if token == "" {
@@ -45,6 +46,7 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 			return
 		}
 
+		// LINEの認証サーバーに問い合わせ
 		v := url.Values{}
 		v.Set("id_token", token)
 		v.Set("client_id", os.Getenv("CLIENT_ID"))
@@ -78,6 +80,7 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 		}
 
 		sub := responseJSON.Sub
+		// LINE側のsub(primarykey)みたいなものをcontextに書き込んでおく
 		c.Set("sub", sub)
 
 		subIsValid, err := a.checkI.CheckSubIsValid(sub)
@@ -89,6 +92,7 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 			return
 		}
 
+		// 送られてきたトークンが有効なものか確認するようにする
 		c.Set("subIsValid", subIsValid)
 		c.Next()
 	}

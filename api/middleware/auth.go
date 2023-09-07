@@ -8,23 +8,15 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/gin-gonic/gin"
 )
 
-type AuthMiddleware struct {
-	checkI models.AuthModel
-}
-
-func InitializeAuthController(am models.AuthModel) *AuthMiddleware {
-	return &AuthMiddleware{checkI: am}
-}
-
 type responseBody struct {
 	Sub string `json:"sub"`
+	Err string `json:"error"`
 }
 
-func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
+func AuthHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenWithBearer := c.GetHeader("Authorization")
 		if tokenWithBearer == "" {
@@ -53,8 +45,8 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 
 		response, err := http.PostForm("https://api.line.me/oauth2/v2.1/verify", v)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
-				"code":    http.StatusVariantAlsoNegotiates,
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"code":    http.StatusInternalServerError,
 				"message": "Connection error with LINE server",
 			})
 			return
@@ -62,8 +54,8 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 
 		responseBodyBytes, err := io.ReadAll(response.Body)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
-				"code":    http.StatusVariantAlsoNegotiates,
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"code":    http.StatusInternalServerError,
 				"message": "Middleware error",
 			})
 			return
@@ -72,28 +64,22 @@ func (a AuthMiddleware) AuthHandler() gin.HandlerFunc {
 		var responseJSON responseBody
 		err = json.Unmarshal(responseBodyBytes, &responseJSON)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
-				"code":    http.StatusVariantAlsoNegotiates,
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"code":    http.StatusInternalServerError,
 				"message": "JSON parse error",
 			})
 			return
 		}
 
+		if !(responseJSON.Err == "") {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"code":    http.StatusUnauthorized,
+				"message": responseJSON.Err,
+			})
+		}
 		sub := responseJSON.Sub
 		// LINE側のsub(primarykey)みたいなものをcontextに書き込んでおく
 		c.Set("sub", sub)
-
-		subIsValid, err := a.checkI.CheckSubIsValid(sub)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusVariantAlsoNegotiates, gin.H{
-				"code":    http.StatusVariantAlsoNegotiates,
-				"message": "sub check error",
-			})
-			return
-		}
-
-		// 送られてきたトークンが有効なものか確認するようにする
-		c.Set("subIsValid", subIsValid)
 		c.Next()
 	}
 }

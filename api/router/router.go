@@ -16,15 +16,13 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	r.Use(cors.New(config))
 	r.Use(middleware.ErrorHandler())
-
-	authModel := models.InitializeAuthRepo(db)
-	authController := middleware.InitializeAuthController(authModel)
+	r.Use(middleware.AuthHandler())
 
 	users := r.Group("users")
 	{
 		userModel := models.InitalizeUserRepo(db)
 		userController := controllers.InitializeUserController(userModel)
-		users.GET("/:uid", authController.AuthHandler(), userController.Show)
+		users.GET("/:uid", userController.Show)
 		users.POST("/register", userController.Register)
 	}
 

@@ -5,10 +5,9 @@ import (
 )
 
 type User struct {
-	UID      string `json:"uid" gorm:"primaryKey;size:256"`
-	Sub      string `json:"sub" gorm:"unique;not null;size:500"`
+	UID      string `json:"uid" gorm:"primaryKey;not null;size:256"`
+	Sub      string `json:"sub" gorm:"primaryKey;not null;size:500"`
 	Name     string `json:"name"`
-	Icon     string `json:"icon"`
 	Point    int    `json:"point"`
 	Duration int    `json:"duration"`
 }

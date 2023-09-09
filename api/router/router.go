@@ -16,7 +16,6 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	r.Use(cors.New(config))
 	r.Use(middleware.ErrorHandler())
-	r.Use(middleware.AuthHandler())
 
 	users := r.Group("users")
 	{

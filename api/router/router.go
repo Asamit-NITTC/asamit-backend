@@ -21,8 +21,8 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	{
 		userModel := models.InitalizeUserRepo(db)
 		userController := controllers.InitializeUserController(userModel)
-		users.GET("/:uid", userController.Show)
-		users.POST("/register", userController.Register)
+		users.GET("/:uid", userController.GetUserInfo)
+		users.POST("/register", userController.SignUp)
 	}
 
 	targetTime := r.Group("target-time")

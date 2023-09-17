@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -23,6 +25,8 @@ func InitalizeUserRepo(repo *gorm.DB) *UserRepo {
 type UserModel interface {
 	GetUserInfo(uid string) (User, error)
 	SignUpUserInfo(us *User) error
+	ChangeUserInfo(us User) error
+	CheckExistsUser(uid string) (string, error)
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -40,4 +44,25 @@ func (u UserRepo) SignUpUserInfo(us *User) error {
 		return err
 	}
 	return nil
+}
+
+func (u UserRepo) ChangeUserInfo(us User) error {
+	err := u.repo.Model(&User{}).Where("uid = ?", us.UID).UpdateColumns(User{Name: us.Name, Point: us.Point, Duration: us.Duration}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u UserRepo) CheckExistsUser(uid string) (string, error) {
+	var userInfo User
+	err := u.repo.First(&userInfo, "uid = ?", uid).Error
+	if err != nil {
+		return "", err
+	}
+
+	if uid == "" {
+		return "", errors.New("Subが空です")
+	}
+	return userInfo.Sub, nil
 }

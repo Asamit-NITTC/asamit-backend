@@ -23,7 +23,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		userController := controllers.InitializeUserController(userModel)
 		users.GET("/:uid", userController.GetUserInfo)
 		users.PUT("/update_profile", middleware.AuthHandler(), userController.ChangeUserInfo)
-		users.POST("/register", userController.SignUp)
+		users.POST("/signup", userController.SignUp)
 	}
 
 	targetTime := r.Group("target-time")

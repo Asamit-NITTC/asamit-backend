@@ -1,14 +1,13 @@
 package models
 
 import (
-	"errors"
-
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	UID      string `json:"uid" gorm:"primaryKey;not null;size:256"`
-	Sub      string `json:"sub" gorm:"primaryKey;not null;size:500"`
+	Sub      string `json:"sub" gorm:"unique;not null;size:500"`
 	Name     string `json:"name"`
 	Point    int    `json:"point"`
 	Duration int    `json:"duration"`
@@ -26,7 +25,8 @@ type UserModel interface {
 	GetUserInfo(uid string) (User, error)
 	SignUpUserInfo(us *User) error
 	ChangeUserInfo(us User) error
-	CheckExistsUser(uid string) (string, error)
+	CheckExistsUserWithUID(uid string) (string, error)
+	CheckExistsUserWithSub(sub string) (bool, error)
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -39,7 +39,8 @@ func (u UserRepo) GetUserInfo(uid string) (User, error) {
 }
 
 func (u UserRepo) SignUpUserInfo(us *User) error {
-	err := u.repo.Save(&us).Where("uid = ?", us.UID).Error
+	us.UID = uuid.NewString()
+	err := u.repo.Create(us).Error
 	if err != nil {
 		return err
 	}
@@ -54,15 +55,27 @@ func (u UserRepo) ChangeUserInfo(us User) error {
 	return nil
 }
 
-func (u UserRepo) CheckExistsUser(uid string) (string, error) {
+func (u UserRepo) CheckExistsUserWithUID(uid string) (string, error) {
 	var userInfo User
 	err := u.repo.First(&userInfo, "uid = ?", uid).Error
 	if err != nil {
 		return "", err
 	}
 
-	if uid == "" {
-		return "", errors.New("Subが空です")
-	}
 	return userInfo.Sub, nil
+}
+
+func (u UserRepo) CheckExistsUserWithSub(sub string) (bool, error) {
+	var userInfo User
+	err := u.repo.Find(&userInfo, "sub = ?", sub).Error
+	if err != nil {
+		return false, err
+	}
+
+	//あくまでも判定はController層に委ねる
+	if userInfo.Sub == "" {
+		return false, nil
+	}
+
+	return true, nil
 }

@@ -1,9 +1,8 @@
 package models
 
 import (
-	"os"
-
 	"gorm.io/gorm"
+	"os"
 )
 
 func MigrateDB(db *gorm.DB) {

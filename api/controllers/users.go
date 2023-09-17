@@ -36,7 +36,7 @@ func (u UserController) SignUp(c *gin.Context) {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return
 	}
-	err = u.userModel.SetUserInfo(&registerInfo)
+	err = u.userModel.SignUpUserInfo(&registerInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic)
 		return

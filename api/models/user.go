@@ -22,7 +22,7 @@ func InitalizeUserRepo(repo *gorm.DB) *UserRepo {
 
 type UserModel interface {
 	GetUserInfo(uid string) (User, error)
-	SetUserInfo(us *User) error
+	SignUpUserInfo(us *User) error
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -34,7 +34,7 @@ func (u UserRepo) GetUserInfo(uid string) (User, error) {
 	return userInfo, nil
 }
 
-func (u UserRepo) SetUserInfo(us *User) error {
+func (u UserRepo) SignUpUserInfo(us *User) error {
 	err := u.repo.Save(&us).Where("uid = ?", us.UID).Error
 	if err != nil {
 		return err

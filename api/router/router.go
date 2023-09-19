@@ -30,7 +30,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	{
 		targetTimeModel := models.InitializeTargetRepo(db)
 		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel)
-		targetTime.PUT("/set", targetTimeController.Set)
+		targetTime.PUT("/set", middleware.AuthHandler(), targetTimeController.Set)
 	}
 
 	wake := r.Group("wake")

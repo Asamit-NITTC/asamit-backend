@@ -19,7 +19,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 
 	users := r.Group("users")
 	{
-		userModel := models.InitalizeUserRepo(db)
+		userModel := models.InitializeUserRepo(db)
 		userController := controllers.InitializeUserController(userModel)
 		users.GET("/:uid", userController.GetUserInfo)
 		users.PUT("/update_profile", middleware.AuthHandler(), userController.ChangeUserInfo)
@@ -29,16 +29,17 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	targetTime := r.Group("target-time")
 	{
 		targetTimeModel := models.InitializeTargetRepo(db)
-		userModel := models.InitalizeUserRepo(db)
+		userModel := models.InitializeUserRepo(db)
 		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel, userModel)
 		targetTime.PUT("/set", middleware.AuthHandler(), targetTimeController.Set)
 	}
 
 	wake := r.Group("wake")
 	{
-		wakeModel := models.InitalizeWakeRepo(db)
-		wakeController := controllers.InitializeWakeController(wakeModel)
-		wake.POST("/report", wakeController.Report)
+		wakeModel := models.InitializeWakeRepo(db)
+		userModel := models.InitializeUserRepo(db)
+		wakeController := controllers.InitializeWakeController(wakeModel, userModel)
+		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
 	}
 	return r
 }

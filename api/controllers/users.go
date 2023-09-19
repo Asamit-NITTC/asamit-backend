@@ -67,7 +67,6 @@ func (u UserController) SignUp(c *gin.Context) {
 	}
 
 	// レスポンスを返すときに見えないようにする
-	registerInfo.UID = ""
 	registerInfo.Sub = ""
 	c.JSON(http.StatusOK, registerInfo)
 	return

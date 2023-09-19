@@ -18,7 +18,7 @@ type WakeRepo struct {
 	repo *gorm.DB
 }
 
-func InitalizeWakeRepo(repo *gorm.DB) *WakeRepo {
+func InitializeWakeRepo(repo *gorm.DB) *WakeRepo {
 	return &WakeRepo{repo: repo}
 }
 

@@ -17,7 +17,7 @@ type UserRepo struct {
 	repo *gorm.DB
 }
 
-func InitalizeUserRepo(repo *gorm.DB) *UserRepo {
+func InitializeUserRepo(repo *gorm.DB) *UserRepo {
 	return &UserRepo{repo: repo}
 }
 

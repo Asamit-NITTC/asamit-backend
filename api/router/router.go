@@ -29,7 +29,8 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	targetTime := r.Group("target-time")
 	{
 		targetTimeModel := models.InitializeTargetRepo(db)
-		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel)
+		userModel := models.InitalizeUserRepo(db)
+		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel, userModel)
 		targetTime.PUT("/set", middleware.AuthHandler(), targetTimeController.Set)
 	}
 

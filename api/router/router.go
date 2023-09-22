@@ -13,7 +13,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 
 	r := gin.Default()
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = []string{"*"}
 	r.Use(cors.New(config))
 	r.Use(middleware.ErrorHandler())
 

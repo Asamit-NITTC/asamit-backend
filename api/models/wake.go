@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/Asamit-NITTC/asamit-backend-test/db"
+	"gorm.io/gorm"
 )
 
 type Wake struct {
@@ -14,14 +14,24 @@ type Wake struct {
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
-type WakeModel struct{}
+type WakeRepo struct {
+	repo *gorm.DB
+}
 
-func (w WakeModel) Report(wa Wake) error {
+func InitializeWakeRepo(repo *gorm.DB) *WakeRepo {
+	return &WakeRepo{repo: repo}
+}
+
+type WakeModel interface {
+	Report(wa Wake) error
+}
+
+func (w WakeRepo) Report(wa Wake) error {
 	_, err := time.Parse(time.RFC3339, wa.WakeUpTime)
 	if err != nil {
 		return err
 	}
-	err = db.DB.Save(&wa).Where("uid = ?", wa.UserUID).Error
+	err = w.repo.Save(&wa).Where("uid = ?", wa.UserUID).Error
 	if err != nil {
 		return err
 	}

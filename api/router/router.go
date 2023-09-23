@@ -14,6 +14,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
+	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
 	r.Use(cors.New(config))
 	r.Use(middleware.ErrorHandler())
 

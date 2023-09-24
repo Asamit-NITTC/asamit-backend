@@ -17,5 +17,5 @@ COPY --from=build-env /api/main /api/main
 
 EXPOSE 8080
 
-CMD ["/app/main"]
+CMD ["/api/main"]
 

@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/Asamit-NITTC/asamit-backend-test/db"
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/Asamit-NITTC/asamit-backend-test/router"
+	"os"
 )
 
 func main() {
@@ -15,7 +14,6 @@ func main() {
 	r := router.NewRouter(db)
 	models.MigrateDB(db)
 	models.InsertDummyData(db)
-	//	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	//	r.Run(port)
-	r.Run(":8080")
+	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	r.Run(port)
 }

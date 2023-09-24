@@ -15,6 +15,7 @@ func main() {
 	r := router.NewRouter(db)
 	models.MigrateDB(db)
 	models.InsertDummyData(db)
-	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	r.Run(port)
+	//	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	//	r.Run(port)
+	r.Run(":8080")
 }

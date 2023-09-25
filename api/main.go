@@ -14,10 +14,7 @@ import (
 )
 
 func main() {
-	sqlDB, err := db.ConnectWithConnector()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db, sqlDB := db.InitalizeDB()
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		Conn: sqlDB,
 	}), &gorm.Config{})

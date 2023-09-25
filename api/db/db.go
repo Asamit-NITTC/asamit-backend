@@ -23,14 +23,7 @@ func InitalizeDB() (*gorm.DB, *sql.DB) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/asamit", user, pass, ip, port)
 	var err error
 	var db *gorm.DB
-	for i := 0; i < 10; i++ {
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-		if err == nil {
-			break
-		}
-		log.Printf("retrying to connect to db: %d", i)
-		time.Sleep(WaitTime * time.Second)
-	}
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	sqlDB, err := db.ConnectUnixSocket()
+	sqlDB, err := db.ConnectWithConnector()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 	"os"
-	"time"
 
 	"fmt"
 	"gorm.io/driver/mysql"

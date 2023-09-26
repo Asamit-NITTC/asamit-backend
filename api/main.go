@@ -15,12 +15,16 @@ func main() {
 		defer sqlDB.Close()
 		models.MigrateDB(db)
 		models.InsertDummyData(db)
+
+		r := router.NewRouter(db)
+		port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+		r.Run(port)
+	} else {
+		db, sqlDB := db.InitializeDB()
+		defer sqlDB.Close()
+		r := router.NewRouter(db)
+		port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+		r.Run(port)
 	}
 
-	db, sqlDB := db.InitializeDB()
-	defer sqlDB.Close()
-
-	r := router.NewRouter(db)
-	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	r.Run(port)
 }

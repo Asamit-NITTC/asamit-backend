@@ -27,6 +27,7 @@ type UserModel interface {
 	ChangeUserInfo(us User) error
 	CheckExistsUserWithUID(uid string) (string, error)
 	CheckExistsUserWithSub(sub string) (bool, error)
+	GetUIDWithSub(sub string) (string, error)
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -78,4 +79,14 @@ func (u UserRepo) CheckExistsUserWithSub(sub string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (u UserRepo) GetUIDWithSub(sub string) (string, error) {
+	var userInfo User
+	err := u.repo.First(&userInfo, "sub = ?", sub).Error
+	if err != nil {
+		return "", err
+	}
+
+	return userInfo.UID, nil
 }

@@ -23,6 +23,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		userModel := models.InitializeUserRepo(db)
 		userController := controllers.InitializeUserController(userModel)
 		users.GET("/:uid", userController.GetUserInfo)
+		users.GET("inquiry-sub", middleware.AuthHandler(), userController.InquirySub)
 		users.PUT("/update_profile", middleware.AuthHandler(), userController.ChangeUserInfo)
 		users.POST("/signup", middleware.AuthHandler(), userController.SignUp)
 	}

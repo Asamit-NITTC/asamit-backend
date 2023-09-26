@@ -10,10 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	WaitTime = 1
-)
-
 func InitializeDB() (*gorm.DB, *sql.DB) {
 	user := os.Getenv("CLOUD_SQL_USER_NAME")
 	pass := os.Getenv("CLOUD_SQL_PASSWORD")

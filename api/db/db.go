@@ -33,3 +33,17 @@ func InitializeDB() (*gorm.DB, *sql.DB) {
 
 	return db, sqlDB
 }
+
+func InitializeLocalDB() (*gorm.DB, *sql.DB) {
+	dsn := "root:password@tcp(mysql)/asamit"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db, sqlDB
+}

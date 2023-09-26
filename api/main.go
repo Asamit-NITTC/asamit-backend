@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	db, sqlDB := db.InitalizeDB()
+	db, sqlDB := db.InitializeDB()
 	defer sqlDB.Close()
 	//models.MigrateDB(db)
 	//models.InsertDummyData(db)

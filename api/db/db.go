@@ -14,7 +14,7 @@ const (
 	WaitTime = 1
 )
 
-func InitalizeDB() (*gorm.DB, *sql.DB) {
+func InitializeDB() (*gorm.DB, *sql.DB) {
 	user := os.Getenv("CLOUD_SQL_USER_NAME")
 	pass := os.Getenv("CLOUD_SQL_PASSWORD")
 	ip := os.Getenv("CLOUD_SQL_IP")
@@ -23,6 +23,20 @@ func InitalizeDB() (*gorm.DB, *sql.DB) {
 	var err error
 	var db *gorm.DB
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db, sqlDB
+}
+
+func InitializeLocalDB() (*gorm.DB, *sql.DB) {
+	dsn := "root:password@tcp(mysql)/asamit"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}

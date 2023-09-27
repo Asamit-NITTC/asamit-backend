@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"fmt"
+
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,24 @@ func (u UserController) GetUserInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, userInfo)
 	return
+}
+
+func (u UserController) InquirySub(c *gin.Context) {
+	sub, exist := c.Get("sub")
+	if !exist {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "認証エラー"})
+		return
+	}
+
+	convertedStringSubFromCtx := sub.(string)
+
+	uid, err := u.userModel.GetUIDWithSub(convertedStringSubFromCtx)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "DB問い合わせエラー"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"uid": uid})
 }
 
 func (u UserController) SignUp(c *gin.Context) {

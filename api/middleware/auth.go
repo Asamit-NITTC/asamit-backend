@@ -3,6 +3,7 @@ package middleware
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -20,6 +21,7 @@ func AuthHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenWithBearer := c.GetHeader("Authorization")
 		if tokenWithBearer == "" {
+			log.Println("Authorization header is empty.")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    http.StatusUnauthorized,
 				"message": "Unauthorized",
@@ -31,6 +33,7 @@ func AuthHandler() gin.HandlerFunc {
 		token := strings.ReplaceAll(tokenWithBearer, "Bearer ", "")
 
 		if token == "" {
+			log.Println("ID token is empty.")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    http.StatusUnauthorized,
 				"message": "Unauthorized",
@@ -45,6 +48,7 @@ func AuthHandler() gin.HandlerFunc {
 
 		response, err := http.PostForm("https://api.line.me/oauth2/v2.1/verify", v)
 		if err != nil {
+			log.Println(err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"code":    http.StatusInternalServerError,
 				"message": "Connection error with LINE server",
@@ -54,6 +58,7 @@ func AuthHandler() gin.HandlerFunc {
 
 		responseBodyBytes, err := io.ReadAll(response.Body)
 		if err != nil {
+			log.Println(err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"code":    http.StatusInternalServerError,
 				"message": "Middleware error",
@@ -64,6 +69,7 @@ func AuthHandler() gin.HandlerFunc {
 		var responseJSON responseBody
 		err = json.Unmarshal(responseBodyBytes, &responseJSON)
 		if err != nil {
+			log.Println(err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"code":    http.StatusInternalServerError,
 				"message": "JSON parse error",
@@ -72,6 +78,7 @@ func AuthHandler() gin.HandlerFunc {
 		}
 
 		if !(responseJSON.Err == "") {
+			log.Println("There is an error in the response json.")
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    http.StatusUnauthorized,
 				"message": responseJSON.Err,

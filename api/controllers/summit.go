@@ -14,7 +14,7 @@ type SummitController struct {
 	roomUsersLinkModel models.RoomUsersLinkModel
 }
 
-func InitailizeSummitController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel) *SummitController {
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel) *SummitController {
 	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru}
 }
 
@@ -24,7 +24,7 @@ type createRoomRequestBody struct {
 	Description string
 }
 
-func (s SummitController) CreateRoom(c *gin.Context) {
+func (s SummitController) Create(c *gin.Context) {
 	var requestBody createRoomRequestBody
 	err := c.ShouldBindJSON(&requestBody)
 	if err != nil {
@@ -37,7 +37,7 @@ func (s SummitController) CreateRoom(c *gin.Context) {
 	roomInfo.WakeUpTime = requestBody.WakeUpTime
 	roomInfo.Decription = requestBody.Description
 
-	createdRoomInfo, err := s.roomModel.CreatRoom(roomInfo)
+	createdRoomInfo, err := s.roomModel.CreateRoom(roomInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
 		return

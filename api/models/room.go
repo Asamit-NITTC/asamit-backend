@@ -22,7 +22,7 @@ func InitializeRoomRepo(db *gorm.DB) *RoomRepo {
 }
 
 type RoomModel interface {
-	CreatRoom(ro Room) (Room, error)
+	CreateRoom(ro Room) (Room, error)
 }
 
 func (r RoomRepo) CreateRoom(ro Room) (Room, error) {

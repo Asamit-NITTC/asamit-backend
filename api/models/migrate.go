@@ -8,8 +8,8 @@ import (
 )
 
 func MigrateDB(db *gorm.DB) {
-	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{})
-	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{})
+	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{})
+	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{})
 }
 
 func InsertDummyData(db *gorm.DB) {

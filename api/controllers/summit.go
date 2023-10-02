@@ -9,12 +9,13 @@ import (
 )
 
 type SummitController struct {
-	roomModel models.RoomModel
-	userModel models.UserModel
+	roomModel          models.RoomModel
+	userModel          models.UserModel
+	roomUsersLinkModel models.RoomUsersLinkModel
 }
 
-func InitailizeSummitController(r models.RoomModel, u models.UserModel) *SummitController {
-	return &SummitController{roomModel: r, userModel: u}
+func InitailizeSummitController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel) *SummitController {
+	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru}
 }
 
 type createRoomRequestBody struct {
@@ -41,4 +42,30 @@ func (s SummitController) CreateRoom(c *gin.Context) {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
 		return
 	}
+
+	for _, uid := range requestBody.MemberUID {
+		existUID, err := s.userModel.CheckExistsUserWithUIDReturnBool(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+			return
+		}
+
+		if !existUID {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusNotFound, "There are unregistered users."})
+			return
+		}
+
+		//中間テーブル書き込み用
+		var roomUsersLink models.RoomUsersLink
+		roomUsersLink.RoomRoomID = createdRoomInfo.RoomID
+		roomUsersLink.UserUID = uid
+
+		err = s.roomUsersLinkModel.Insert(roomUsersLink)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, requestBody)
 }

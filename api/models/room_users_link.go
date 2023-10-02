@@ -19,9 +19,13 @@ func InitializeRoomUsersLinkRepo(db *gorm.DB) *RoomUsersLinkRepo {
 }
 
 type RoomUsersLinkModel interface {
-	Insert() error
+	Insert(ru RoomUsersLink) error
 }
 
-func (r RoomUsersLinkRepo) Insert() error {
+func (r RoomUsersLinkRepo) Insert(ru RoomUsersLink) error {
+	err := r.db.Create(&ru).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

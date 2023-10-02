@@ -8,18 +8,17 @@ import (
 )
 
 type Room struct {
-	RoomID     string
+	RoomID     string `gorm:"primaryKey;size:256"`
 	WakeUpTime time.Time
 	Decription string
-	gorm.Model
 }
 
 type RoomRepo struct {
-	db *gorm.DB
+	repo *gorm.DB
 }
 
 func InitializeRoomRepo(db *gorm.DB) *RoomRepo {
-	return &RoomRepo{db: db}
+	return &RoomRepo{repo: db}
 }
 
 type RoomModel interface {
@@ -41,7 +40,7 @@ func (r RoomRepo) CreateRoom(ro Room) (Room, error) {
 	//DBに書き込むためにUUIDをここで生成してRoomIDとする
 	roomInfoResult.RoomID = roomId
 
-	r.db.Create(&roomInfoResult)
+	r.repo.Create(&roomInfoResult)
 
 	//後の中間テーブルに書き込むためにRoomIDを含む構造体を返す
 	return roomInfoResult, nil

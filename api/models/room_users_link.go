@@ -3,19 +3,19 @@ package models
 import "gorm.io/gorm"
 
 type RoomUsersLink struct {
-	RoomRoomID string `gorm:"unique;`
-	UserUID    string `gorm:"unique;`
+	RoomRoomID string `gorm:"primaryKey;`
+	UserUID    string `gorm:"primaryKey;`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Room       Room   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	gorm.Model
 }
 
 type RoomUsersLinkRepo struct {
-	db *gorm.DB
+	repo *gorm.DB
 }
 
 func InitializeRoomUsersLinkRepo(db *gorm.DB) *RoomUsersLinkRepo {
-	return &RoomUsersLinkRepo{db: db}
+	return &RoomUsersLinkRepo{repo: db}
 }
 
 type RoomUsersLinkModel interface {
@@ -23,7 +23,7 @@ type RoomUsersLinkModel interface {
 }
 
 func (r RoomUsersLinkRepo) Insert(ru RoomUsersLink) error {
-	err := r.db.Create(&ru).Error
+	err := r.repo.Create(&ru).Error
 	if err != nil {
 		return err
 	}

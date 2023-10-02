@@ -19,9 +19,9 @@ func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.
 }
 
 type createRoomRequestBody struct {
-	MemberUID   []string
-	WakeUpTime  time.Time
-	Description string
+	MemberUID   []string  `json:"memberUID"`
+	WakeUpTime  time.Time `json:"wakeUpTime"`
+	Description string    `json:"description"`
 }
 
 func (s SummitController) Create(c *gin.Context) {

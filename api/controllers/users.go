@@ -21,7 +21,7 @@ func (u UserController) GetUserInfo(c *gin.Context) {
 	uid := c.Param("uid")
 	userInfo, err := u.userModel.GetUserInfo(uid)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "UID acquisition failure.", err.Error()})
 		return
 	}
 
@@ -42,7 +42,7 @@ func (u UserController) InquirySub(c *gin.Context) {
 
 	uid, err := u.userModel.GetUIDWithSub(convertedStringSubFromCtx)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, "User information acquisition error.", err.Error()})
 		return
 	}
 
@@ -53,13 +53,13 @@ func (u UserController) SignUp(c *gin.Context) {
 	var registerInfo models.User
 	err := c.ShouldBindJSON(&registerInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't convert to json."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't conver to json.", "Can't convert to json."})
 		return
 	}
 
 	subFromContext, exist := c.Get("sub")
 	if !exist {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from context."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from context.", "Can't get sub from context."})
 		return
 	}
 
@@ -67,12 +67,12 @@ func (u UserController) SignUp(c *gin.Context) {
 
 	existSub, err := u.userModel.CheckExistsUserWithSub(convertedStringSubFromCtx)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB.", "Can't get sub from DB."})
 		return
 	}
 
 	if existSub {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB.", "Can't get sub from DB."})
 		return
 	}
 
@@ -81,7 +81,7 @@ func (u UserController) SignUp(c *gin.Context) {
 
 	err = u.userModel.SignUpUserInfo(&registerInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, "DB write error.", err.Error()})
 		return
 	}
 
@@ -96,7 +96,7 @@ func (u UserController) ChangeUserInfo(c *gin.Context) {
 	var receivedUserInfo models.User
 	err := c.ShouldBindJSON(&receivedUserInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't convert to json."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't convert to json.", "Can't convert to json."})
 		return
 	}
 
@@ -105,14 +105,14 @@ func (u UserController) ChangeUserInfo(c *gin.Context) {
 
 	subFromContext, exist := c.Get("sub")
 	if !exist {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from context."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from context.", "Can't get sub from context."})
 		return
 	}
 
 	//DBに保存されているSubと、LINEで認証しContextに入れたSubと一致しているか確かめる
 	subFromDB, err := u.userModel.CheckExistsUserWithUID(uid)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB.", "Can't get sub from DB."})
 		return
 	}
 
@@ -123,13 +123,13 @@ func (u UserController) ChangeUserInfo(c *gin.Context) {
 	}
 
 	if subFromContext != subFromDB {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "The sub obtained from context and the sub obtained from db do not match."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "The sub obtained from context and the sub obtained from db do not match.", "The sub obtained from context and the sub obtained from db do not match."})
 		return
 	}
 
 	err = u.userModel.ChangeUserInfo(receivedUserInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, "DB write error.", err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, receivedUserInfo)

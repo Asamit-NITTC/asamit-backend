@@ -1,6 +1,7 @@
 package controllers
 
 type APIError struct {
-	StatusCode   int
-	ErrorMessage string
+	StatusCode             int
+	ErrorMessage           string
+	ProductionErrorMessage string
 }

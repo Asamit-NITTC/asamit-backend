@@ -18,6 +18,7 @@ func ErrorHandler() gin.HandlerFunc {
 			if os.Getenv("MODE") == "DEBUG" {
 				log.Println(err)
 				apierror := err.Meta.(controllers.APIError)
+				log.Println(apierror.ProductionErrorMessage)
 				c.AbortWithStatusJSON(apierror.StatusCode, gin.H{
 					"error": apierror.ProductionErrorMessage,
 				})

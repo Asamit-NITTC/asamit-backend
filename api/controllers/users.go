@@ -21,7 +21,7 @@ func (u UserController) GetUserInfo(c *gin.Context) {
 	uid := c.Param("uid")
 	userInfo, err := u.userModel.GetUserInfo(uid)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "UID acquisition failure.", err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, err.Error(), "UID acquisition failure."})
 		return
 	}
 
@@ -42,7 +42,7 @@ func (u UserController) InquirySub(c *gin.Context) {
 
 	uid, err := u.userModel.GetUIDWithSub(convertedStringSubFromCtx)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, "User information acquisition error.", err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "User information acquisition error."})
 		return
 	}
 
@@ -53,7 +53,7 @@ func (u UserController) SignUp(c *gin.Context) {
 	var registerInfo models.User
 	err := c.ShouldBindJSON(&registerInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't conver to json.", "Can't convert to json."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't convert to json."})
 		return
 	}
 
@@ -67,7 +67,7 @@ func (u UserController) SignUp(c *gin.Context) {
 
 	existSub, err := u.userModel.CheckExistsUserWithSub(convertedStringSubFromCtx)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB.", "Can't get sub from DB."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, err.Error(), "Can't get sub from DB."})
 		return
 	}
 
@@ -81,7 +81,7 @@ func (u UserController) SignUp(c *gin.Context) {
 
 	err = u.userModel.SignUpUserInfo(&registerInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, "DB write error.", err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
 		return
 	}
 
@@ -96,7 +96,7 @@ func (u UserController) ChangeUserInfo(c *gin.Context) {
 	var receivedUserInfo models.User
 	err := c.ShouldBindJSON(&receivedUserInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't convert to json.", "Can't convert to json."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't convert to json."})
 		return
 	}
 
@@ -129,7 +129,7 @@ func (u UserController) ChangeUserInfo(c *gin.Context) {
 
 	err = u.userModel.ChangeUserInfo(receivedUserInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, "DB write error.", err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
 		return
 	}
 	c.JSON(http.StatusOK, receivedUserInfo)

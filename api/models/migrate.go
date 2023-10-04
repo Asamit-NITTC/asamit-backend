@@ -14,7 +14,7 @@ func MigrateDB(db *gorm.DB) {
 
 func InsertDummyData(db *gorm.DB) {
 	var users = []User{
-		{UID: "33u@2", Sub: os.Getenv("TEST_SUB"), Name: "GoRuGoo", Point: 32, Duration: 5, InvitationStatus: true, AffiliationStatus: true},
+		{UID: "33u@2", Sub: os.Getenv("TEST_SUB"), Name: "GoRuGoo", Point: 32, Duration: 5, InvitationStatus: false, AffiliationStatus: true},
 		{UID: "xyz123", Sub: "abc123", Name: "Alice", Point: 45, Duration: 8, InvitationStatus: true, AffiliationStatus: false},
 		{UID: "789abc", Sub: "def456", Name: "Bob", Point: 27, Duration: 3, InvitationStatus: true, AffiliationStatus: false},
 		{UID: "ghi789", Sub: "jkl012", Name: "Charlie", Point: 19, Duration: 6, InvitationStatus: true, AffiliationStatus: false},

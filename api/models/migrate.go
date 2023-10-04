@@ -14,7 +14,7 @@ func MigrateDB(db *gorm.DB) {
 
 func InsertDummyData(db *gorm.DB) {
 	var users = []User{
-		{UID: "33u@2", Sub: os.Getenv("TEST_SUB"), Name: "GoRuGoo", Point: 32, Duration: 5, InvitationStatus: true, AffiliationStatus: false},
+		{UID: "33u@2", Sub: os.Getenv("TEST_SUB"), Name: "GoRuGoo", Point: 32, Duration: 5, InvitationStatus: true, AffiliationStatus: true},
 		{UID: "xyz123", Sub: "abc123", Name: "Alice", Point: 45, Duration: 8, InvitationStatus: true, AffiliationStatus: false},
 		{UID: "789abc", Sub: "def456", Name: "Bob", Point: 27, Duration: 3, InvitationStatus: true, AffiliationStatus: false},
 		{UID: "ghi789", Sub: "jkl012", Name: "Charlie", Point: 19, Duration: 6, InvitationStatus: true, AffiliationStatus: false},
@@ -23,7 +23,7 @@ func InsertDummyData(db *gorm.DB) {
 		{UID: "lmn012", Sub: "vwx345", Name: "Frank", Point: 60, Duration: 7, InvitationStatus: true, AffiliationStatus: false},
 		{UID: "def345", Sub: "yza678", Name: "Grace", Point: 36, Duration: 4, InvitationStatus: false, AffiliationStatus: false},
 		{UID: "hij678", Sub: "bcd901", Name: "Hank", Point: 25, Duration: 10, InvitationStatus: false, AffiliationStatus: false},
-		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3, InvitationStatus: false, AffiliationStatus: false},
+		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3, InvitationStatus: true, AffiliationStatus: false},
 	}
 
 	rfc3339FormattedCurrentTime := time.Now().Format(time.RFC3339)

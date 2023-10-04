@@ -91,6 +91,11 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 			return
 		}
 
+		if roomID == "" {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "DB get error."})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Approval pending"})
 		return
 	}
@@ -105,6 +110,11 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 		roomID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
 		if err != nil {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+		if roomID == "" {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "DB get error."})
 			return
 		}
 

@@ -3,8 +3,8 @@ package models
 import "gorm.io/gorm"
 
 type RoomUsersLink struct {
-	RoomRoomID string `gorm:"primaryKey;`
-	UserUID    string `gorm:"primaryKey;`
+	RoomRoomID string `gorm:"primaryKey"`
+	UserUID    string `gorm:"primaryKey"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Room       Room   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	gorm.Model

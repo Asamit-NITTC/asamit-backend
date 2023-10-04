@@ -49,8 +49,10 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		roomModel := models.InitializeRoomRepo(db)
 		userModel := models.InitializeUserRepo(db)
 		roomusersLinkModel := models.InitializeRoomUsersLinkRepo(db)
-		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel)
+		approvePendingModel := models.InitializeApprovePendingRepo(db)
+		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel, approvePendingModel)
 		room.POST("/create", middleware.AuthHandler(), roomController.Create)
+		room.GET("/room-affiliation-status", roomController.CheckAffiliateStatus)
 	}
 	return r
 }

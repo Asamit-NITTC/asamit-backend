@@ -6,12 +6,13 @@ import (
 )
 
 type User struct {
-	UID              string `json:"uid" gorm:"primaryKey;not null;size:256"`
-	Sub              string `json:"sub" gorm:"unique;not null;size:500"`
-	Name             string `json:"name"`
-	Point            int    `json:"point"`
-	Duration         int    `json:"duration"`
-	InvitationStatus bool
+	UID               string `json:"uid" gorm:"primaryKey;not null;size:256"`
+	Sub               string `json:"sub" gorm:"unique;not null;size:500"`
+	Name              string `json:"name"`
+	Point             int    `json:"point"`
+	Duration          int    `json:"duration"`
+	InvitationStatus  bool
+	AffiliationStatus bool
 }
 
 type UserRepo struct {
@@ -119,6 +120,19 @@ func (u UserRepo) CheckInvitationStatus(uid string) (bool, error) {
 	}
 
 	if userInfo.InvitationStatus == false {
+		return false, nil
+	}
+	return true, nil
+}
+
+func (u UserRepo) CheckAffliationStatus(uid string) (bool, error) {
+	var userInfo User
+	err := u.repo.First(&userInfo, "uid = ?", uid).Error
+	if err != nil {
+		return false, err
+	}
+
+	if userInfo.AffiliationStatus == false {
 		return false, nil
 	}
 	return true, nil

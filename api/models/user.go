@@ -6,11 +6,12 @@ import (
 )
 
 type User struct {
-	UID      string `json:"uid" gorm:"primaryKey;not null;size:256"`
-	Sub      string `json:"sub" gorm:"unique;not null;size:500"`
-	Name     string `json:"name"`
-	Point    int    `json:"point"`
-	Duration int    `json:"duration"`
+	UID                string `json:"uid" gorm:"primaryKey;not null;size:256"`
+	Sub                string `json:"sub" gorm:"unique;not null;size:500"`
+	Name               string `json:"name"`
+	Point              int    `json:"point"`
+	Duration           int    `json:"duration"`
+	AffilicationStatus bool
 }
 
 type UserRepo struct {
@@ -29,6 +30,7 @@ type UserModel interface {
 	CheckExistsUserWithSub(sub string) (bool, error)
 	GetUIDWithSub(sub string) (string, error)
 	CheckExistsUserWithUIDReturnBool(uid string) (bool, error)
+	CheckAffilicateStatus(uid string) (bool, error)
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -42,6 +44,7 @@ func (u UserRepo) GetUserInfo(uid string) (User, error) {
 
 func (u UserRepo) SignUpUserInfo(us *User) error {
 	us.UID = uuid.NewString()
+	us.AffilicationStatus = false
 	err := u.repo.Create(us).Error
 	if err != nil {
 		return err
@@ -105,5 +108,18 @@ func (u UserRepo) CheckExistsUserWithUIDReturnBool(uid string) (bool, error) {
 		return false, nil
 	}
 
+	return true, nil
+}
+
+func (u UserRepo) CheckAffilicateStatus(uid string) (bool, error) {
+	var userInfo User
+	err := u.repo.First(&userInfo, "uid = ?", uid).Error
+	if err != nil {
+		return false, err
+	}
+
+	if userInfo.AffilicationStatus == false {
+		return false, nil
+	}
 	return true, nil
 }

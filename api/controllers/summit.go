@@ -9,13 +9,14 @@ import (
 )
 
 type SummitController struct {
-	roomModel          models.RoomModel
-	userModel          models.UserModel
-	roomUsersLinkModel models.RoomUsersLinkModel
+	roomModel           models.RoomModel
+	userModel           models.UserModel
+	roomUsersLinkModel  models.RoomUsersLinkModel
+	approvePendingModel models.ApprovePendingModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel) *SummitController {
-	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru}
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel) *SummitController {
+	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a}
 }
 
 type createRoomRequestBody struct {
@@ -68,4 +69,35 @@ func (s SummitController) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, requestBody)
+}
+
+func (s SummitController) CheckAffilicateStatus(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
+	}
+	//本来はここに認証があってもいいが、現在の仕様はAuthorizationMiddlewareに一任している
+
+	affilicationStatus, err := s.userModel.CheckAffilicateStatus(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	//どこにも所属していない
+	if !affilicationStatus {
+		roomID, err := s.approvePendingModel.GetRoomIdIfApproved(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+		if roomID == "" {
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Record not found."})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"roomID": roomID})
+	}
+
 }

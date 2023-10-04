@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"errors"
+
+	"gorm.io/gorm"
+)
 
 type ApprovePendig struct {
 	RoomRoomID string `gorm:"primaryKey;`
@@ -28,5 +32,5 @@ func (a ApprovePendigRepo) GetRoomIdIfApproved(uid string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return approvePending.UserUID, nil
+	return approvePending.RoomRoomID, nil
 }

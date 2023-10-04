@@ -28,7 +28,7 @@ func (s SummitController) Create(c *gin.Context) {
 	var requestBody createRoomRequestBody
 	err := c.ShouldBindJSON(&requestBody)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, "Can't convert to json."})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't convert to json."})
 		return
 	}
 
@@ -39,19 +39,19 @@ func (s SummitController) Create(c *gin.Context) {
 
 	createdRoomInfo, err := s.roomModel.CreateRoom(roomInfo)
 	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Can't get RoomInfo."})
 		return
 	}
 
 	for _, uid := range requestBody.MemberUID {
 		existUID, err := s.userModel.CheckExistsUserWithUIDReturnBool(uid)
 		if err != nil {
-			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Can't get UID."})
 			return
 		}
 
 		if !existUID {
-			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusNotFound, "There are unregistered users."})
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusNotFound, "There are unregistered users.", "There are unregistered users."})
 			return
 		}
 
@@ -62,7 +62,7 @@ func (s SummitController) Create(c *gin.Context) {
 
 		err = s.roomUsersLinkModel.Insert(roomUsersLink)
 		if err != nil {
-			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error()})
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
 			return
 		}
 	}

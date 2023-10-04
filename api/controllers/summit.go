@@ -92,6 +92,7 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Approval pending"})
+		return
 	}
 
 	affiliationStatus, err := s.userModel.CheckAffliationStatus(uid)
@@ -108,6 +109,7 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Already belonging"})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})

@@ -71,21 +71,21 @@ func (s SummitController) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, requestBody)
 }
 
-func (s SummitController) CheckAffilicateStatus(c *gin.Context) {
+func (s SummitController) CheckAffiliateStatus(c *gin.Context) {
 	uid := c.Query("uid")
 	if uid == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
 	}
 	//本来はここに認証があってもいいが、現在の仕様はAuthorizationMiddlewareに一任している
 
-	affilicationStatus, err := s.userModel.CheckAffilicateStatus(uid)
+	affiliationStatus, err := s.userModel.CheckAffiliateStatus(uid)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
 		return
 	}
 
 	//どこにも所属していない
-	if !affilicationStatus {
+	if !affiliationStatus {
 		roomID, err := s.approvePendingModel.GetRoomIdIfApproved(uid)
 		if err != nil {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})

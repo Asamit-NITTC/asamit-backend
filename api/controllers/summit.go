@@ -71,27 +71,35 @@ func (s SummitController) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, requestBody)
 }
 
-func (s SummitController) CheckAffiliateStatus(c *gin.Context) {
+func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 	uid := c.Query("uid")
 	if uid == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
 	}
 	//本来はここに認証があってもいいが、現在の仕様はAuthorizationMiddlewareに一任している
 
-	affiliationStatus, err := s.userModel.CheckAffiliateStatus(uid)
+	invitationStatus, err := s.userModel.CheckInvitationStatus(uid)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
 		return
 	}
 
-	//どこにも所属していない場合は承認待ちModelに入っているか調査
+	if invitationStatus {
+		roomID, err := s.approvePendingModel.ReturnRoomIdIfRegisterd(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
 
-	var is_invited = true
-	var is_affiliation = true
-	var roomID = ""
+		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Approval pending"})
+	}
 
-	//所属・所属待ち・どちらでもないの３つの正常レスポンスを返すため最後に判定してレスポンスを返す
-	//所属していない
+	affiliationStatus, err := s.userModel.CheckAffliationStatus(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
 	if affiliationStatus {
 		roomID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
 		if err != nil {
@@ -99,26 +107,8 @@ func (s SummitController) CheckAffiliateStatus(c *gin.Context) {
 			return
 		}
 
-		if roomID == "" {
-			is_affiliation = false
-		}
-	} else {
-		roomID, err := s.approvePendingModel.GetRoomIdIfApproved(uid)
-		if err != nil {
-			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
-			return
-		}
-		if roomID == "" {
-			is_invited = false
-		}
+		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Already belonging"})
 	}
 
-	if !is_invited && !is_affiliation {
-		c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "No invitation and no affiliation"})
-	} else if is_invited {
-		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Pending"})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Affiliated"})
-	}
-
+	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})
 }

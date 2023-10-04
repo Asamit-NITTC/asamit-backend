@@ -53,6 +53,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel, approvePendingModel)
 		room.POST("/create", middleware.AuthHandler(), roomController.Create)
 		room.GET("/room-affiliation-status", roomController.CheckAffiliateAndInventionStatus)
+		room.GET("/room-detail-info", roomController.GetRoomDetailInfo)
 	}
 	return r
 }

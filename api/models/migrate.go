@@ -24,7 +24,6 @@ func InsertDummyData(db *gorm.DB) {
 		{UID: "def345", Sub: "yza678", Name: "Grace", Point: 36, Duration: 4, InvitationStatus: false, AffiliationStatus: false},
 		{UID: "hij678", Sub: "bcd901", Name: "Hank", Point: 25, Duration: 10, InvitationStatus: false, AffiliationStatus: false},
 		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3, InvitationStatus: false, AffiliationStatus: false},
-		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3, InvitationStatus: false, AffiliationStatus: true},
 	}
 
 	rfc3339FormattedCurrentTime := time.Now().Format(time.RFC3339)
@@ -55,7 +54,23 @@ func InsertDummyData(db *gorm.DB) {
 		{UserUID: "321jkl", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning world!"},
 	}
 
+	convetedTime, _ := time.Parse(time.RFC3339, rfc3339FormattedCurrentTime)
+	var room = []Room{
+		{RoomID: "ohayou", WakeUpTime: convetedTime, Decription: "test"},
+	}
+
+	var roomUserLink = []RoomUsersLink{
+		{RoomRoomID: "ohayou", UserUID: "33u@2"},
+	}
+
+	var approvePending = []ApprovePendig{
+		{RoomRoomID: "ohayou", UserUID: "123bcd"},
+	}
+
 	db.Save(&users)
 	db.Save(&targetTime)
 	db.Save(&wakeData)
+	db.Save(&room)
+	db.Save(&roomUserLink)
+	db.Save(&approvePending)
 }

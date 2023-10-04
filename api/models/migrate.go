@@ -8,22 +8,22 @@ import (
 )
 
 func MigrateDB(db *gorm.DB) {
-	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{})
-	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{})
+	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePendig{})
+	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePendig{})
 }
 
 func InsertDummyData(db *gorm.DB) {
 	var users = []User{
-		{UID: "33u@2", Sub: os.Getenv("TEST_SUB"), Name: "GoRuGoo", Point: 32, Duration: 5},
-		{UID: "xyz123", Sub: "abc123", Name: "Alice", Point: 45, Duration: 8},
-		{UID: "789abc", Sub: "def456", Name: "Bob", Point: 27, Duration: 3},
-		{UID: "ghi789", Sub: "jkl012", Name: "Charlie", Point: 19, Duration: 6},
-		{UID: "321jkl", Sub: "mno345", Name: "David", Point: 55, Duration: 9},
-		{UID: "456pqr", Sub: "stu789", Name: "Eve", Point: 12, Duration: 2},
-		{UID: "lmn012", Sub: "vwx345", Name: "Frank", Point: 60, Duration: 7},
-		{UID: "def345", Sub: "yza678", Name: "Grace", Point: 36, Duration: 4},
-		{UID: "hij678", Sub: "bcd901", Name: "Hank", Point: 25, Duration: 10},
-		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3},
+		{UID: "33u@2", Sub: os.Getenv("TEST_SUB"), Name: "GoRuGoo", Point: 32, Duration: 5, AffiliationStatus: true},
+		{UID: "xyz123", Sub: "abc123", Name: "Alice", Point: 45, Duration: 8, AffiliationStatus: true},
+		{UID: "789abc", Sub: "def456", Name: "Bob", Point: 27, Duration: 3, AffiliationStatus: true},
+		{UID: "ghi789", Sub: "jkl012", Name: "Charlie", Point: 19, Duration: 6, AffiliationStatus: true},
+		{UID: "321jkl", Sub: "mno345", Name: "David", Point: 55, Duration: 9, AffiliationStatus: true},
+		{UID: "456pqr", Sub: "stu789", Name: "Eve", Point: 12, Duration: 2, AffiliationStatus: true},
+		{UID: "lmn012", Sub: "vwx345", Name: "Frank", Point: 60, Duration: 7, AffiliationStatus: true},
+		{UID: "def345", Sub: "yza678", Name: "Grace", Point: 36, Duration: 4, AffiliationStatus: false},
+		{UID: "hij678", Sub: "bcd901", Name: "Hank", Point: 25, Duration: 10, AffiliationStatus: false},
+		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3, AffiliationStatus: false},
 	}
 
 	rfc3339FormattedCurrentTime := time.Now().Format(time.RFC3339)

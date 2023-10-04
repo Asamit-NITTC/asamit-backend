@@ -33,7 +33,7 @@ func (r RoomUsersLinkRepo) Insert(ru RoomUsersLink) error {
 
 func (r RoomUsersLinkRepo) GetRoomIdIfAffiliated(uid string) (string, error) {
 	var roomUserLinkInfo RoomUsersLink
-	err := r.repo.First(&roomUserLinkInfo, "user_uid = ?", uid).Error
+	err := r.repo.Find(&roomUserLinkInfo, "user_uid = ?", uid).Error
 	if err != nil {
 		return "", err
 	}

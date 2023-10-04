@@ -26,7 +26,7 @@ type ApprovePendingModel interface {
 
 func (a ApprovePendigRepo) GetRoomIdIfApproved(uid string) (string, error) {
 	var approvePending ApprovePendig
-	err := a.repo.First(&approvePending, "user_uid = ?", uid).Error
+	err := a.repo.Find(&approvePending, "user_uid = ?", uid).Error
 	if err != nil {
 		return "", err
 	}

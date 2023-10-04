@@ -21,10 +21,10 @@ func InitializeApprovePendingRepo(db *gorm.DB) *ApprovePendigRepo {
 }
 
 type ApprovePendingModel interface {
-	GetRoomIdIfApproved(uid string) (string, error)
+	ReturnRoomIdIfRegisterd(uid string) (string, error)
 }
 
-func (a ApprovePendigRepo) GetRoomIdIfApproved(uid string) (string, error) {
+func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {
 	var approvePending ApprovePendig
 	err := a.repo.Find(&approvePending, "user_uid = ?", uid).Error
 	if err != nil {

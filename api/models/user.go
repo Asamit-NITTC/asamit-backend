@@ -111,7 +111,7 @@ func (u UserRepo) CheckExistsUserWithUIDReturnBool(uid string) (bool, error) {
 	return true, nil
 }
 
-func (u UserRepo) CheckAffiliateStatus(uid string) (bool, error) {
+func (u UserRepo) CheckInvitationStatus(uid string) (bool, error) {
 	var userInfo User
 	err := u.repo.First(&userInfo, "uid = ?", uid).Error
 	if err != nil {

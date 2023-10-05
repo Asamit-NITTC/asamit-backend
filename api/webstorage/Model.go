@@ -20,6 +20,6 @@ type CloudStorageWebModel interface {
 	Write(objectName string, file multipart.File) (string, error)
 }
 
-func (c CloudStorageWebRepo) Write(objectName string, file multipart.File) (string, error) {
+func (c CloudStorageWebRepo) Write(roomID string, file multipart.File) (string, error) {
 	return "", nil
 }

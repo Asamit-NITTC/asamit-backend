@@ -1,6 +1,8 @@
 package router
 
 import (
+	"cloud.google.com/go/storage"
+	"context"
 	"github.com/Asamit-NITTC/asamit-backend-test/controllers"
 	"github.com/Asamit-NITTC/asamit-backend-test/middleware"
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
@@ -9,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewRouter(db *gorm.DB) *gin.Engine {
+func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *gin.Engine {
 
 	r := gin.Default()
 	config := cors.DefaultConfig()

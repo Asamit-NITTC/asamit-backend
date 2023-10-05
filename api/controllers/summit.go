@@ -5,19 +5,21 @@ import (
 	"time"
 
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
+	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-gonic/gin"
 )
 
 type SummitController struct {
-	roomModel           models.RoomModel
-	userModel           models.UserModel
-	roomUsersLinkModel  models.RoomUsersLinkModel
-	approvePendingModel models.ApprovePendingModel
-	roomTalkModel       models.RoomTalkModel
+	roomModel            models.RoomModel
+	userModel            models.UserModel
+	roomUsersLinkModel   models.RoomUsersLinkModel
+	approvePendingModel  models.ApprovePendingModel
+	roomTalkModel        models.RoomTalkModel
+	cloudStorageWebModel webstorage.CloudStorageWebModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalk) *SummitController {
-	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a, roomTalkModel: rt}
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalk, c webstorage.CloudStorageWebModel) *SummitController {
+	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a, roomTalkModel: rt, cloudStorageWebModel: c}
 }
 
 type createRoomRequestBody struct {

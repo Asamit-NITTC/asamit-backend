@@ -15,10 +15,10 @@ type SummitController struct {
 	roomUsersLinkModel   models.RoomUsersLinkModel
 	approvePendingModel  models.ApprovePendingModel
 	roomTalkModel        models.RoomTalkModel
-	cloudStorageWebModel webstorage.CloudStorageWebModel
+	cloudStorageWebModel webstorage.CloudStorageOriginalWebModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalk, c webstorage.CloudStorageWebModel) *SummitController {
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalk, c webstorage.CloudStorageOriginalWebModel) *SummitController {
 	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a, roomTalkModel: rt, cloudStorageWebModel: c}
 }
 

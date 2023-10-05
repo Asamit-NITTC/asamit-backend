@@ -153,6 +153,9 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 		return
 	}
 
+	//わかりやすい変数名に変更
+	forWritingCommentObject := requestBody
+
 	morningActivityImageFile, _ := c.FormFile("image")
 	//下でバリデーションしているためあえてerrを受け取らない
 	//ファイルサイズが0ならそもそもファイル関連の処理が走らないから安全
@@ -169,6 +172,12 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Cloud Storage error."})
 			return
 		}
-		requestBody.ImageURL = objectName
+		forWritingCommentObject.ImageURL = objectName
 	}
+	err = s.roomTalkModel.InsertComment(forWritingCommentObject)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+	c.JSON(http.StatusOK, forWritingCommentObject)
 }

@@ -18,7 +18,7 @@ type SummitController struct {
 	cloudStorageWebModel webstorage.CloudStorageOriginalWebModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalk, c webstorage.CloudStorageOriginalWebModel) *SummitController {
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalkModel, c webstorage.CloudStorageOriginalWebModel) *SummitController {
 	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a, roomTalkModel: rt, cloudStorageWebModel: c}
 }
 
@@ -171,5 +171,4 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 		}
 		requestBody.ImageURL = objectName
 	}
-
 }

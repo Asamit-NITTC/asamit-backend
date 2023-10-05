@@ -124,3 +124,20 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})
 }
+
+// 時間があったらテーブル結合を用いて実装したい
+func (s SummitController) GetRoomDetailInfo(c *gin.Context) {
+	roomID := c.Query("roomID")
+	if roomID == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
+		return
+	}
+
+	roomDetailInfo, err := s.roomModel.GetRoomDetailInfo(roomID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "DB get error."})
+		return
+	}
+
+	c.JSON(http.StatusOK, roomDetailInfo)
+}

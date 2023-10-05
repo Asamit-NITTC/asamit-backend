@@ -23,6 +23,7 @@ func InitializeRoomRepo(db *gorm.DB) *RoomRepo {
 
 type RoomModel interface {
 	CreateRoom(ro Room) (Room, error)
+	GetRoomDetailInfo(roomID string) (Room, error)
 }
 
 func (r RoomRepo) CreateRoom(ro Room) (Room, error) {
@@ -44,4 +45,14 @@ func (r RoomRepo) CreateRoom(ro Room) (Room, error) {
 
 	//後の中間テーブルに書き込むためにRoomIDを含む構造体を返す
 	return roomInfoResult, nil
+}
+
+func (r RoomRepo) GetRoomDetailInfo(roomID string) (Room, error) {
+	var roomInfo Room
+	err := r.repo.First(&roomInfo, "room_id = ?", roomID).Error
+	if err != nil {
+		return roomInfo, err
+	}
+
+	return roomInfo, nil
 }

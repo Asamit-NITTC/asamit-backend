@@ -13,10 +13,11 @@ type SummitController struct {
 	userModel           models.UserModel
 	roomUsersLinkModel  models.RoomUsersLinkModel
 	approvePendingModel models.ApprovePendingModel
+	roomTalkModel       models.RoomTalkModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel) *SummitController {
-	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a}
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalk) *SummitController {
+	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a, roomTalkModel: rt}
 }
 
 type createRoomRequestBody struct {
@@ -140,4 +141,27 @@ func (s SummitController) GetRoomDetailInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, roomDetailInfo)
+}
+
+func (s SummitController) RecordTalk(c *gin.Context) {
+	var requestBody models.RoomTalk
+	err := c.ShouldBindJSON(&requestBody)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't convert to json."})
+		return
+	}
+
+	morningActivityImageFile, err := c.FormFile("image")
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't get image."})
+		return
+	}
+
+	morningActivityImage, err := morningActivityImageFile.Open()
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Image processing error."})
+		return
+	}
+
+	err = s.roomTalkModel.InsertComment(requestBody)
 }

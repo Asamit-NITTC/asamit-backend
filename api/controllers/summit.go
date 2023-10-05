@@ -153,17 +153,23 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 		return
 	}
 
-	morningActivityImageFile, err := c.FormFile("image")
-	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't get image."})
-		return
+	morningActivityImageFile, _ := c.FormFile("image")
+	//下でバリデーションしているためあえてerrを受け取らない
+	//ファイルサイズが0ならそもそもファイル関連の処理が走らないから安全
+
+	if morningActivityImageFile.Size != 0 {
+		morningActivityImage, err := morningActivityImageFile.Open()
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Image processing error."})
+			return
+		}
+		defer morningActivityImage.Close()
+		objectName, err := s.cloudStorageWebModel.Write(requestBody.RoomRoomID, morningActivityImage)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Cloud Storage error."})
+			return
+		}
+		requestBody.ImageURL = objectName
 	}
 
-	morningActivityImage, err := morningActivityImageFile.Open()
-	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Image processing error."})
-		return
-	}
-
-	err = s.roomTalkModel.InsertComment(requestBody)
 }

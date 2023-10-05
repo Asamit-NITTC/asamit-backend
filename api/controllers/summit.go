@@ -9,13 +9,14 @@ import (
 )
 
 type SummitController struct {
-	roomModel          models.RoomModel
-	userModel          models.UserModel
-	roomUsersLinkModel models.RoomUsersLinkModel
+	roomModel           models.RoomModel
+	userModel           models.UserModel
+	roomUsersLinkModel  models.RoomUsersLinkModel
+	approvePendingModel models.ApprovePendingModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel) *SummitController {
-	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru}
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel) *SummitController {
+	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a}
 }
 
 type createRoomRequestBody struct {
@@ -68,4 +69,58 @@ func (s SummitController) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, requestBody)
+}
+
+func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
+	}
+	//本来はここに認証があってもいいが、現在の仕様はAuthorizationMiddlewareに一任している
+
+	invitationStatus, err := s.userModel.CheckInvitationStatus(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	if invitationStatus {
+		roomID, err := s.approvePendingModel.ReturnRoomIdIfRegisterd(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+		if roomID == "" {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "DB get error."})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Approval pending"})
+		return
+	}
+
+	affiliationStatus, err := s.userModel.CheckAffliationStatus(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	if affiliationStatus {
+		roomID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+		if roomID == "" {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "DB get error."})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"roomID": roomID, "status": "Already belonging"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})
 }

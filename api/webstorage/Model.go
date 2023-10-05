@@ -4,31 +4,27 @@ import (
 	"context"
 	"mime/multipart"
 
-	"fmt"
 	"io"
-	"os"
 	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/google/uuid"
-
-	"cloud.google.com/go/storage"
 )
 
-type CloudStorageWebRepo struct {
+type CloudStorageOriginalWebRepo struct {
 	ctx    context.Context
 	bucket *storage.BucketHandle
 }
 
-func InitializeCloudStorageRepo(c context.Context, b *storage.BucketHandle) *CloudStorageWebRepo {
-	return &CloudStorageWebRepo{ctx: c, bucket: b}
+func InitializeCloudStorageOriginalWebRepo(c context.Context, b *storage.BucketHandle) *CloudStorageOriginalWebRepo {
+	return &CloudStorageOriginalWebRepo{ctx: c, bucket: b}
 }
 
-type CloudStorageWebModel interface {
+type CloudStorageOriginalWebModel interface {
 	Write(objectName string, file multipart.File) (string, error)
 }
 
-func (c CloudStorageWebRepo) Write(roomID string, file multipart.File) (string, error) {
+func (c CloudStorageOriginalWebRepo) Write(roomID string, file multipart.File) (string, error) {
 	//roomID/UUIDにすることによってファイル名が被ることなく擬似的にディレクトリ分けしている
 	fileUUID := uuid.NewString()
 	objectName := roomID + "/" + fileUUID

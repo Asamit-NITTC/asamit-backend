@@ -17,9 +17,9 @@ func InitializeCloudStorageRepo(c context.Context, b *storage.BucketHandle) *Clo
 }
 
 type CloudStorageWebModel interface {
-	Write(objectName string, file multipart.File) error
+	Write(objectName string, file multipart.File) (string, error)
 }
 
-func (c CloudStorageWebRepo) Write(objectName string, file multipart.File) error {
-	return nil
+func (c CloudStorageWebRepo) Write(objectName string, file multipart.File) (string, error) {
+	return "", nil
 }

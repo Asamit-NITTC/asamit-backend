@@ -3,8 +3,8 @@ package models
 import "gorm.io/gorm"
 
 type RoomTalk struct {
-	RoomRoomID string `gorm:"unique"`
-	UserUID    string `gorm:"unique"`
+	RoomRoomID string `gorm:"not null"`
+	UserUID    string `gorm:"not null"`
 	Comment    string `gorm:"not null"`
 	ImageURL   string
 	User       User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`

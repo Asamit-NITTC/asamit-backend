@@ -16,6 +16,7 @@ services:
     tty: true
     volumes:
       - ./api:/go/src/api
+      - ./credential:/go/src/api/credential
     ports:
       - '8080:8080'
     env_file:

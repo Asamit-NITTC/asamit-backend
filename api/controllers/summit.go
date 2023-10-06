@@ -5,18 +5,21 @@ import (
 	"time"
 
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
+	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-gonic/gin"
 )
 
 type SummitController struct {
-	roomModel           models.RoomModel
-	userModel           models.UserModel
-	roomUsersLinkModel  models.RoomUsersLinkModel
-	approvePendingModel models.ApprovePendingModel
+	roomModel            models.RoomModel
+	userModel            models.UserModel
+	roomUsersLinkModel   models.RoomUsersLinkModel
+	approvePendingModel  models.ApprovePendingModel
+	roomTalkModel        models.RoomTalkModel
+	cloudStorageWebModel webstorage.CloudStorageOriginalWebModel
 }
 
-func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel) *SummitController {
-	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a}
+func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.RoomUsersLinkModel, a models.ApprovePendingModel, rt models.RoomTalkModel, c webstorage.CloudStorageOriginalWebModel) *SummitController {
+	return &SummitController{roomModel: r, userModel: u, roomUsersLinkModel: ru, approvePendingModel: a, roomTalkModel: rt, cloudStorageWebModel: c}
 }
 
 type createRoomRequestBody struct {
@@ -140,4 +143,38 @@ func (s SummitController) GetRoomDetailInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, roomDetailInfo)
+}
+
+func (s SummitController) RecordTalk(c *gin.Context) {
+	var requestBody models.RoomTalk
+	requestBody.RoomRoomID = c.PostForm("room_room_id")
+	requestBody.UserUID = c.PostForm("user_uid")
+	requestBody.Comment = c.PostForm("comment")
+	//わかりやすい変数名に変更
+	forWritingCommentObject := requestBody
+
+	morningActivityImageFile, _ := c.FormFile("image")
+	//下でバリデーションしているためあえてerrを受け取らない
+	//ファイルサイズが0ならそもそもファイル関連の処理が走らないから安全
+
+	if morningActivityImageFile.Size != 0 {
+		morningActivityImage, err := morningActivityImageFile.Open()
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Image processing error."})
+			return
+		}
+		defer morningActivityImage.Close()
+		objectName, err := s.cloudStorageWebModel.Write(requestBody.RoomRoomID, morningActivityImage)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Cloud Storage error."})
+			return
+		}
+		forWritingCommentObject.ImageURL = objectName
+	}
+	err := s.roomTalkModel.InsertComment(forWritingCommentObject)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+	c.JSON(http.StatusOK, forWritingCommentObject)
 }

@@ -1,8 +1,8 @@
-# asamit-backend-test
+# asamit-backend
 
 ## Overview
 
-第 34 回 高専プロコン作品 Asamit！の試験用バックエンド
+第 34 回 高専プロコン作品 Asamit！のバックエンド
 
 ## Requirement
 
@@ -23,13 +23,13 @@
 1. Clone this repository
 
 ```
-git clone git@github.com:Asamit-NITTC/asamit-backend-test.git
+git clone git@github.com:Asamit-NITTC/asamit-backend.git
 ```
 
 2. Change directory
 
 ```
-cd asamit-backend-test
+cd asamit-backend
 ```
 
 3. Build docker image
@@ -58,6 +58,40 @@ password
 CREATE DATABASE asamit;
 ```
 
+5. Create env file
+```
+touch authenv.env
+```
+
+```
+#LINE関連
+CLIENT_ID=hogehoge
+TEST_SUB=hogehoge
+
+CLOUD_SQL_USER_NAME=hogehoge
+CLOUD_SQL_PASSWORD=hogehoge
+CLOUD_SQL_IP=hogehoge
+CLOUD_SQL_PORT=3306
+
+
+PROJECT_ID=hogehoge
+
+PORT=8080
+
+MODE=DEBUG
+
+#ローカルでCloudStorageにアクセスする際はdocker内のファイルパスを指定
+GOOGLE_APPLICATION_CREDENTIALS=/go/src/api/credential/asami-gorugo.json
+```
+
+6.Create credential directory
+
+IAMキーファイルを保存する
+
+```
+mkdir credential
+```
+
 ## Usage(local)
 
 1. Build & start container
@@ -72,13 +106,20 @@ docker-compose up -d
 docker-compose exec api go run main.go
 ```
 
-## DB
+## Terraformについて
 
-暫定
+実証実験用(重要なユーザー情報を保存しない)で用いた。
 
-![er](https://github.com/Asamit-NITTC/asamit-backend/assets/89027827/f78a8e68-c3fb-42a5-a5cc-d3fdd71cd3fe)
-
+リソースを立ち上げる時
+```
+terraform apply
+```
+リソースを削除する時
+```
+terraform destroy
+```
 
 ## Author
 
 - [Yuta Ito](https://github.com/GoRuGoo)
+- [Shuntaro Nozaki](https://github.com/shun-harutaro)

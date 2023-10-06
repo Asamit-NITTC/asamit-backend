@@ -100,7 +100,7 @@ mkdir credential
 docker-compose up -d
 ```
 
-2.
+2. Boot
 
 ```
 docker-compose exec api go run main.go

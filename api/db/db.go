@@ -15,7 +15,7 @@ func InitializeDB() (*gorm.DB, *sql.DB) {
 	pass := os.Getenv("CLOUD_SQL_PASSWORD")
 	ip := os.Getenv("CLOUD_SQL_IP")
 	port := os.Getenv("CLOUD_SQL_PORT")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/asamit?parseTime=true", user, pass, ip, port)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/asamit?charset=utf8mb4&parseTime=True&loc=Asia%2Tokyo", user, pass, ip, port)
 	var err error
 	var db *gorm.DB
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -31,7 +31,7 @@ func InitializeDB() (*gorm.DB, *sql.DB) {
 }
 
 func InitializeLocalDB() (*gorm.DB, *sql.DB) {
-	dsn := "root:password@tcp(mysql)/asamit?parseTime=true"
+	dsn := "root:password@tcp(mysql)/asamit?charset=utf8mb4&parseTime=True&loc=Asia%2Tokyo"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)

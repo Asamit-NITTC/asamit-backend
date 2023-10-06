@@ -26,9 +26,5 @@ func InitializeCloudStorage() (context.Context, *storage.BucketHandle) {
 	// Creates a Bucket instance.
 	bucket := client.Bucket(bucketName)
 
-	// Creates the new bucket.
-	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
-	defer cancel()
-
 	return ctx, bucket
 }

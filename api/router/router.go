@@ -38,6 +38,7 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		userModel := models.InitializeUserRepo(db)
 		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel, userModel)
 		targetTime.PUT("/set", middleware.AuthHandler(), targetTimeController.Set)
+		targetTime.GET("/get", middleware.AuthHandler(), targetTimeController.Get)
 	}
 
 	wake := r.Group("wake")
@@ -46,7 +47,6 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		userModel := models.InitializeUserRepo(db)
 		wakeController := controllers.InitializeWakeController(wakeModel, userModel)
 		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
-		wake.GET("/get-time", middleware.AuthHandler(), wakeController.GetWakeTime)
 	}
 
 	room := r.Group("summit")

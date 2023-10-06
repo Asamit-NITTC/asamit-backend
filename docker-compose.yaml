@@ -4,6 +4,7 @@ services:
     build: ./build/db/
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./sqlconfig/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: password
     ports:

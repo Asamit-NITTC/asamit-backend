@@ -59,3 +59,11 @@ func (t TargetTimeController) Set(c *gin.Context) {
 	c.JSON(http.StatusOK, requestInfo)
 	return
 }
+
+func (t TargetTimeController) Get(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incomplete query parameters."})
+	}
+
+}

@@ -38,4 +38,10 @@ func (t TargetTimeRepo) Set(wt TargetTime) error {
 }
 
 func (t TargetTimeRepo) Get(uid string) (string, error) {
+	var targetTimeInfo TargetTime
+	err := t.repo.First(&targetTimeInfo).Error
+	if err != nil {
+		return "", err
+	}
+	return targetTimeInfo.TargetTime, nil
 }

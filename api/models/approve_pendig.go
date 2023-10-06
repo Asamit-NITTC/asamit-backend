@@ -21,6 +21,7 @@ func InitializeApprovePendingRepo(db *gorm.DB) *ApprovePendigRepo {
 
 type ApprovePendingModel interface {
 	ReturnRoomIdIfRegisterd(uid string) (string, error)
+	CheckExists(uid string) (bool, error)
 }
 
 func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {
@@ -30,4 +31,13 @@ func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {
 		return "", err
 	}
 	return approvePending.RoomRoomID, nil
+}
+
+func (a ApprovePendigRepo) CheckExists(uid string) (bool, error) {
+	var approvePending ApprovePendig
+	err := a.repo.Find(&approvePending, "user_uid = ?", uid).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

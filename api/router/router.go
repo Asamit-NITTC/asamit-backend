@@ -43,5 +43,17 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		wakeController := controllers.InitializeWakeController(wakeModel, userModel)
 		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
 	}
+
+	room := r.Group("summit")
+	{
+		roomModel := models.InitializeRoomRepo(db)
+		userModel := models.InitializeUserRepo(db)
+		roomusersLinkModel := models.InitializeRoomUsersLinkRepo(db)
+		approvePendingModel := models.InitializeApprovePendingRepo(db)
+		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel, approvePendingModel)
+		room.POST("/create", middleware.AuthHandler(), roomController.Create)
+		room.GET("/room-affiliation-status", roomController.CheckAffiliateAndInventionStatus)
+		room.GET("/room-detail-info", roomController.GetRoomDetailInfo)
+	}
 	return r
 }

@@ -5,7 +5,6 @@ import (
 	"mime/multipart"
 
 	"io"
-	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/google/uuid"
@@ -29,25 +28,15 @@ func (c CloudStorageOriginalWebRepo) Write(roomID string, file multipart.File) (
 	fileUUID := uuid.NewString()
 	objectName := roomID + "/" + fileUUID
 
-	ctx := c.ctx
-	client, err := storage.NewClient(ctx)
+	obj := c.bucket.Object(objectName)
+	writer := obj.NewWriter(c.ctx)
+	_, err := io.Copy(writer, file)
 	if err != nil {
 		return "", err
 	}
-	defer client.Close()
 
-	ctx, cancel := context.WithTimeout(ctx, time.Second*50)
-	defer cancel()
-
-	o := c.bucket.Object(objectName)
-
-	o = o.If(storage.Conditions{DoesNotExist: true})
-
-	wc := o.NewWriter(ctx)
-	if _, err = io.Copy(wc, file); err != nil {
-		return "", err
-	}
-	if err := wc.Close(); err != nil {
+	err = writer.Close()
+	if err != nil {
 		return "", err
 	}
 	return objectName, nil

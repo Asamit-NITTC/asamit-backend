@@ -3,7 +3,6 @@ package webstorage
 import (
 	"context"
 	"log"
-	"time"
 
 	"cloud.google.com/go/storage"
 )

@@ -14,11 +14,11 @@ type TargetTime struct {
 }
 
 type TargetTimeRepo struct {
-	db *gorm.DB
+	repo *gorm.DB
 }
 
 func InitializeTargetRepo(db *gorm.DB) *TargetTimeRepo {
-	return &TargetTimeRepo{db: db}
+	return &TargetTimeRepo{repo: db}
 }
 
 type TargetTimeModel interface {
@@ -30,9 +30,12 @@ func (t TargetTimeRepo) Set(wt TargetTime) error {
 	if err != nil {
 		return err
 	}
-	err = t.db.Save(&wt).Where("uid = ?", wt.UserUID).Error
+	err = t.repo.Save(&wt).Where("uid = ?", wt.UserUID).Error
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (t TargetTimeRepo) Get(uid string) (string, error) {
 }

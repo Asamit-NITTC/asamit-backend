@@ -59,3 +59,19 @@ func (t TargetTimeController) Set(c *gin.Context) {
 	c.JSON(http.StatusOK, requestInfo)
 	return
 }
+
+func (t TargetTimeController) Get(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incomplete query parameters."})
+		return
+	}
+
+	targetTime, err := t.targetTimeModel.Get(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"targetTime": targetTime})
+}

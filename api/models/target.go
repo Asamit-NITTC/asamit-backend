@@ -23,6 +23,7 @@ func InitializeTargetRepo(db *gorm.DB) *TargetTimeRepo {
 
 type TargetTimeModel interface {
 	Set(wt TargetTime) error
+	Get(uid string) (string, error)
 }
 
 func (t TargetTimeRepo) Set(wt TargetTime) error {

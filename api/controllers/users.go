@@ -100,33 +100,6 @@ func (u UserController) ChangeUserInfo(c *gin.Context) {
 		return
 	}
 
-	//検証関数に入れるためのUID
-	uid := receivedUserInfo.UID
-
-	subFromContext, exist := c.Get("sub")
-	if !exist {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from context.", "Can't get sub from context."})
-		return
-	}
-
-	//DBに保存されているSubと、LINEで認証しContextに入れたSubと一致しているか確かめる
-	subFromDB, err := u.userModel.CheckExistsUserWithUID(uid)
-	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "Can't get sub from DB.", "Can't get sub from DB."})
-		return
-	}
-
-	//Subが登録されていなかったら弾く
-	if subFromContext == "" {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "未認証ユーザー"})
-		return
-	}
-
-	if subFromContext != subFromDB {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusUnauthorized, "The sub obtained from context and the sub obtained from db do not match.", "The sub obtained from context and the sub obtained from db do not match."})
-		return
-	}
-
 	err = u.userModel.ChangeUserInfo(receivedUserInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})

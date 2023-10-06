@@ -1,15 +1,19 @@
 package router
 
 import (
+	"context"
+
+	"cloud.google.com/go/storage"
 	"github.com/Asamit-NITTC/asamit-backend-test/controllers"
 	"github.com/Asamit-NITTC/asamit-backend-test/middleware"
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
+	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func NewRouter(db *gorm.DB) *gin.Engine {
+func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *gin.Engine {
 
 	r := gin.Default()
 	config := cors.DefaultConfig()
@@ -34,6 +38,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		userModel := models.InitializeUserRepo(db)
 		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel, userModel)
 		targetTime.PUT("/set", middleware.AuthHandler(), targetTimeController.Set)
+		targetTime.GET("/get", middleware.AuthHandler(), targetTimeController.Get)
 	}
 
 	wake := r.Group("wake")
@@ -42,6 +47,21 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		userModel := models.InitializeUserRepo(db)
 		wakeController := controllers.InitializeWakeController(wakeModel, userModel)
 		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
+	}
+
+	room := r.Group("summit")
+	{
+		roomModel := models.InitializeRoomRepo(db)
+		userModel := models.InitializeUserRepo(db)
+		roomusersLinkModel := models.InitializeRoomUsersLinkRepo(db)
+		approvePendingModel := models.InitializeApprovePendingRepo(db)
+		roomTalkModel := models.InitializeRoomTaliRepo(db)
+		cloudStorageOriginalWebModel := webstorage.InitializeCloudStorageOriginalWebRepo(ctx, bucket)
+		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel, approvePendingModel, roomTalkModel, cloudStorageOriginalWebModel)
+		room.POST("/create", middleware.AuthHandler(), roomController.Create)
+		room.GET("/room-affiliation-status", middleware.AuthHandler(), roomController.CheckAffiliateAndInventionStatus)
+		room.GET("/room-detail-info", middleware.AuthHandler(), roomController.GetRoomDetailInfo)
+		room.POST("/record-talk", middleware.AuthHandler(), roomController.RecordTalk)
 	}
 	return r
 }

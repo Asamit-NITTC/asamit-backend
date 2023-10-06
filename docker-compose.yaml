@@ -4,6 +4,7 @@ services:
     build: ./build/db/
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./sqlconfig/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_ROOT_PASSWORD: password
     ports:
@@ -15,6 +16,7 @@ services:
     tty: true
     volumes:
       - ./api:/go/src/api
+      - ./credential:/go/src/api/credential
     ports:
       - '8080:8080'
     env_file:

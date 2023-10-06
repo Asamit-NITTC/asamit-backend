@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -147,12 +148,9 @@ func (s SummitController) GetRoomDetailInfo(c *gin.Context) {
 
 func (s SummitController) RecordTalk(c *gin.Context) {
 	var requestBody models.RoomTalk
-	err := c.ShouldBindJSON(&requestBody)
-	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't convert to json."})
-		return
-	}
-
+	requestBody.RoomRoomID = c.PostForm("room_room_id")
+	requestBody.UserUID = c.PostForm("user_uid")
+	requestBody.Comment = c.PostForm("comment")
 	//わかりやすい変数名に変更
 	forWritingCommentObject := requestBody
 
@@ -174,7 +172,7 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 		}
 		forWritingCommentObject.ImageURL = objectName
 	}
-	err = s.roomTalkModel.InsertComment(forWritingCommentObject)
+	err := s.roomTalkModel.InsertComment(forWritingCommentObject)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
 		return

@@ -69,6 +69,20 @@ func InsertDummyData(db *gorm.DB) {
 
 	var roomTalk = []RoomTalk{
 		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
 	}
 	db.Save(&users)
 	db.Save(&targetTime)

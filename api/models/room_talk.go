@@ -22,6 +22,7 @@ func InitializeRoomTaliRepo(db *gorm.DB) *RoomTalkRepo {
 
 type RoomTalkModel interface {
 	InsertComment(rt RoomTalk) error
+	GetAllTalk(roomId string) ([]RoomTalk, error)
 }
 
 func (r RoomTalkRepo) InsertComment(rt RoomTalk) error {

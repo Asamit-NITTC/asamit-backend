@@ -74,7 +74,7 @@ func (s SummitController) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, requestBody)
 }
 
-func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
+func (s SummitController) CheckAffiliateAndInvitationStatus(c *gin.Context) {
 	uid := c.Query("uid")
 	if uid == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
@@ -128,7 +128,7 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})
 }
 
-func (s SummitController) UpdateAffiliateStatus(c *gin.Context) {
+func (s SummitController) Approve(c *gin.Context) {
 	uid := c.Query("uid")
 	if uid == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Bad request."})
@@ -145,6 +145,34 @@ func (s SummitController) UpdateAffiliateStatus(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Can't find waiting list."})
 		return
 	}
+
+	roomId, err := s.approvePendingModel.GetRoomId(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	err = s.userModel.ChangeInvitationAndAffiliationStatus(uid, false, true)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Infomation delete error."})
+		return
+	}
+
+	err = s.approvePendingModel.DeletePendingRecord(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Infomation delete error."})
+		return
+	}
+
+	var roomUsersLink models.RoomUsersLink
+	roomUsersLink.RoomRoomID = roomId
+	roomUsersLink.UserUID = uid
+	err = s.roomUsersLinkModel.Insert(roomUsersLink)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
 // 時間があったらテーブル結合を用いて実装したい

@@ -178,3 +178,17 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, forWritingCommentObject)
 }
+
+func (s SummitController) GetTalk(c *gin.Context) {
+	roomId := c.Query("room-id")
+	if roomId == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": roomId})
+		return
+	}
+
+	roomTalkList, err := s.SummitController.GetAllTalk(roomId)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+}

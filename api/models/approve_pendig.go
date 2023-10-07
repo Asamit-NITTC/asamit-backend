@@ -22,6 +22,7 @@ func InitializeApprovePendingRepo(db *gorm.DB) *ApprovePendigRepo {
 type ApprovePendingModel interface {
 	ReturnRoomIdIfRegisterd(uid string) (string, error)
 	CheckExists(uid string) (bool, error)
+	DeletePendingRecord(uid string) error
 }
 
 func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {

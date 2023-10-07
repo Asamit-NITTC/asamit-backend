@@ -7,7 +7,6 @@ import (
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/tools/go/analysis/passes/ifaceassert"
 )
 
 type SummitController struct {

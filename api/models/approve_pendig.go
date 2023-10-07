@@ -41,3 +41,11 @@ func (a ApprovePendigRepo) CheckExists(uid string) (bool, error) {
 	}
 	return true, nil
 }
+
+func (a ApprovePendigRepo) DeletePendingRecord(uid string) error {
+	err := a.repo.Delete(&ApprovePendig{}, "user_uid = ?", uid).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

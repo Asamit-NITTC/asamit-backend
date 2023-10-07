@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"google.golang.org/api/books/v1"
 	"gorm.io/gorm"
 )
 
@@ -33,6 +34,8 @@ type UserModel interface {
 	CheckExistsUserWithUIDReturnBool(uid string) (bool, error)
 	CheckInvitationStatus(uid string) (bool, error)
 	CheckAffliationStatus(uid string) (bool, error)
+	ChangeInvitationStatus(uid string, status bool) error
+	ChangeAffiliationStatus(uid string, status bool) error
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -137,4 +140,20 @@ func (u UserRepo) CheckAffliationStatus(uid string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func (u UserRepo) ChangeInventionStatus(uid string, status bool) error {
+	err := u.repo.Model(&User{}).Where("uid = ?", uid).UpdateColumns(User{InvitationStatus: status}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u UserRepo) ChangeAffiliationStatus(uid string, status bool) error {
+	err := u.repo.Model(&User{}).Where("uid = ?", uid).UpdateColumns(User{AffiliationStatus: status}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

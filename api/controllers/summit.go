@@ -7,6 +7,7 @@ import (
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/tools/go/analysis/passes/ifaceassert"
 )
 
 type SummitController struct {
@@ -126,6 +127,25 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})
+}
+
+func (s SummitController) UpdateAffiliateStatus(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Bad request."})
+		return
+	}
+
+	isWatingAffiliation, err := s.approvePendingModel.CheckExists(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "DB get error."})
+		return
+	}
+
+	if !isWatingAffiliation {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Can't find waiting list."})
+		return
+	}
 }
 
 // 時間があったらテーブル結合を用いて実装したい

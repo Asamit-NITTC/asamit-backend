@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"google.golang.org/api/books/v1"
 	"gorm.io/gorm"
 )
 

@@ -31,3 +31,12 @@ func (r RoomTalkRepo) InsertComment(rt RoomTalk) error {
 	}
 	return nil
 }
+
+func (r RoomTalkRepo) GetAllTalk(roomId string) ([]RoomTalk, error) {
+	var roomTalkList []RoomTalk
+	err := r.repo.Order("updated_at").Find(&roomTalkList, "room_room_id = ?", roomId).Error
+	if err != nil {
+		return roomTalkList, err
+	}
+	return roomTalkList, nil
+}

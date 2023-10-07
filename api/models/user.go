@@ -33,7 +33,7 @@ type UserModel interface {
 	CheckExistsUserWithUIDReturnBool(uid string) (bool, error)
 	CheckInvitationStatus(uid string) (bool, error)
 	CheckAffliationStatus(uid string) (bool, error)
-	ChangeInvitationAndAffiliationStatus(uid string, inventionStatus bool, affiliationStatus bool) error
+	ChangeInvitationAndAffiliationStatus(uid string, invitationStatus bool, affiliationStatus bool) error
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {

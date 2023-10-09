@@ -14,7 +14,7 @@ import (
 
 type responseBody struct {
 	Sub string `json:"sub"`
-	Err string `json:"error"`
+	Err string `json:"error_description"`
 }
 
 func AuthHandler() gin.HandlerFunc {

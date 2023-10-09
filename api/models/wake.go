@@ -7,13 +7,13 @@ import (
 )
 
 type Wake struct {
-	ReportID   int    `gorm:"primaryKey;autoIncrement"`
 	UserUID    string `json:"uid" gorm:"size:256"`
 	RoomRoomID string
 	WakeUpTime string `json:"WakeUpTime"`
 	Comment    string `json:"comment"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Room       Room   `gorm:"constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	gorm.Model
 }
 
 type WakeRepo struct {
@@ -26,6 +26,7 @@ func InitializeWakeRepo(repo *gorm.DB) *WakeRepo {
 
 type WakeModel interface {
 	Report(wa Wake) error
+	GetAllReport(uid string) ([]Wake, error)
 }
 
 func (w WakeRepo) Report(wa Wake) error {
@@ -38,4 +39,13 @@ func (w WakeRepo) Report(wa Wake) error {
 		return err
 	}
 	return nil
+}
+
+func (w WakeRepo) GetAllReport(uid string) ([]Wake, error) {
+	var allWakeUpReport []Wake
+	err := w.repo.Find(&allWakeUpReport, "user_uid = ?", uid).Order("updated_at").Error
+	if err != nil {
+		return allWakeUpReport, err
+	}
+	return allWakeUpReport, nil
 }

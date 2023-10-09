@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"errors"
+	"gorm.io/gorm"
+)
 
 type RoomTalk struct {
 	RoomRoomID string `gorm:"not null"`
@@ -38,6 +41,10 @@ func (r RoomTalkRepo) GetAllTalk(roomId string) ([]RoomTalk, error) {
 	err := r.repo.Order("updated_at").Find(&roomTalkList, "room_room_id = ?", roomId).Error
 	if err != nil {
 		return roomTalkList, err
+	}
+
+	if len(roomTalkList) == 0 {
+		return roomTalkList, errors.New("record not found.")
 	}
 	return roomTalkList, nil
 }

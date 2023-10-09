@@ -186,9 +186,11 @@ func (s SummitController) GetTalk(c *gin.Context) {
 		return
 	}
 
-	roomTalkList, err := s.SummitController.GetAllTalk(roomId)
+	roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
 		return
 	}
+
+	c.JSON(http.StatusOK, roomTalkList)
 }

@@ -180,9 +180,14 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 }
 
 func (s SummitController) GetTalk(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "uid is empty."})
+		return
+	}
 	roomId := c.Query("room-id")
 	if roomId == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": roomId})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "room-id is empty."})
 		return
 	}
 

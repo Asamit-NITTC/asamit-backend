@@ -43,15 +43,15 @@ func InsertDummyData(db *gorm.DB) {
 
 	var wakeData = []Wake{
 		{UserUID: "33u@2", RoomRoomID: "ohayou", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning!"},
-		{UserUID: "xyz123", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Rise and shine!"},
-		{UserUID: "789abc", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Waking up early today."},
-		{UserUID: "ghi789", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Another day begins."},
-		{UserUID: "123bcd", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Ready to start the day."},
-		{UserUID: "lmn012", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Morning routine."},
-		{UserUID: "def345", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Feeling refreshed!"},
-		{UserUID: "hij678", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Early bird."},
-		{UserUID: "456pqr", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "A new dawn."},
-		{UserUID: "321jkl", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning world!"},
+		{UserUID: "xyz123", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Rise and shine!"},
+		{UserUID: "789abc", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Waking up early today."},
+		{UserUID: "ghi789", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Another day begins."},
+		{UserUID: "123bcd", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Ready to start the day."},
+		{UserUID: "lmn012", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Morning routine."},
+		{UserUID: "def345", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Feeling refreshed!"},
+		{UserUID: "hij678", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Early bird."},
+		{UserUID: "456pqr", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "A new dawn."},
+		{UserUID: "321jkl", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning world!"},
 	}
 
 	convetedTime, _ := time.Parse(time.RFC3339, rfc3339FormattedCurrentTime)

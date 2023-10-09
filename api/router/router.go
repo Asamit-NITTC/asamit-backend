@@ -45,7 +45,8 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 	{
 		wakeModel := models.InitializeWakeRepo(db)
 		userModel := models.InitializeUserRepo(db)
-		wakeController := controllers.InitializeWakeController(wakeModel, userModel)
+		roomUsersLinkRepo := models.InitializeRoomUsersLinkRepo(db)
+		wakeController := controllers.InitializeWakeController(wakeModel, userModel, roomUsersLinkRepo)
 		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
 	}
 

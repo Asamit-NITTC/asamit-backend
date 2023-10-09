@@ -13,8 +13,8 @@ type WakeController struct {
 	roomusersLinkModel models.RoomUsersLinkModel
 }
 
-func InitializeWakeController(w models.WakeModel, u models.UserModel) *WakeController {
-	return &WakeController{wakeModel: w, userModel: u}
+func InitializeWakeController(w models.WakeModel, u models.UserModel, r models.RoomUsersLinkModel) *WakeController {
+	return &WakeController{wakeModel: w, userModel: u, roomusersLinkModel: r}
 }
 
 func (w WakeController) Report(c *gin.Context) {

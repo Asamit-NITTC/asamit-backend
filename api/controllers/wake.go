@@ -42,3 +42,17 @@ func (w WakeController) Report(c *gin.Context) {
 	c.JSON(http.StatusOK, wakeUpInfo)
 	return
 }
+
+func (w WakeController) GetAllReport(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "UID is empty."})
+	}
+
+	allWakeUpReport, err := w.wakeModel.GetAllReport(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+	c.JSON(http.StatusOK, allWakeUpReport)
+}

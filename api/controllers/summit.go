@@ -191,6 +191,17 @@ func (s SummitController) GetTalk(c *gin.Context) {
 		return
 	}
 
+	affiliateUID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	//指定されたRoomIdと所属しているRoomIdが違ったらエラーを返す
+	if affiliateUID != uid {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Affiliation and request are different."})
+	}
+
 	roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})

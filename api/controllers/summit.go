@@ -200,6 +200,7 @@ func (s SummitController) GetTalk(c *gin.Context) {
 	//指定されたRoomIdと所属しているRoomIdが違ったらエラーを返す
 	if affiliateUID != uid {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Affiliation and request are different."})
+		return
 	}
 
 	roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)

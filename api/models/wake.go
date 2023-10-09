@@ -9,9 +9,11 @@ import (
 type Wake struct {
 	ReportID   int    `gorm:"primaryKey;autoIncrement"`
 	UserUID    string `json:"uid" gorm:"size:256"`
+	RoomRoomID string
 	WakeUpTime string `json:"WakeUpTime"`
 	Comment    string `json:"comment"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Room       Room   `gorm:"constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
 }
 
 type WakeRepo struct {

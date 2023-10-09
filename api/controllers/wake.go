@@ -8,8 +8,9 @@ import (
 )
 
 type WakeController struct {
-	wakeModel models.WakeModel
-	userModel models.UserModel
+	wakeModel          models.WakeModel
+	userModel          models.UserModel
+	roomusersLinkModel models.RoomUsersLinkModel
 }
 
 func InitializeWakeController(w models.WakeModel, u models.UserModel) *WakeController {
@@ -23,6 +24,15 @@ func (w WakeController) Report(c *gin.Context) {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "Can't convert to json."})
 		return
 	}
+
+	roomId, err := w.roomusersLinkModel.GetRoomIdIfAffiliated(wakeUpInfo.UserUID)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "DB get error."})
+		return
+	}
+
+	//空でも大丈夫
+	wakeUpInfo.RoomRoomID = roomId
 
 	err = w.wakeModel.Report(wakeUpInfo)
 	if err != nil {

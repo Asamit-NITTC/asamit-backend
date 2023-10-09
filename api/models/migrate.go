@@ -70,6 +70,11 @@ func InsertDummyData(db *gorm.DB) {
 	var roomTalk = []RoomTalk{
 		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
 	}
+
+	var wake = []Wake{
+		{UserUID: "33u@2", RoomRoomID: "ohayou", WakeUpTime: "2023-06-27T00:00:00+10:00", Comment: "oooo"},
+		{UserUID: "33u@2", RoomRoomID: "", WakeUpTime: "2023-06-27T00:00:00+10:00", Comment: "oooo"},
+	}
 	db.Save(&users)
 	db.Save(&targetTime)
 	db.Save(&wakeData)
@@ -77,4 +82,5 @@ func InsertDummyData(db *gorm.DB) {
 	db.Save(&roomUserLink)
 	db.Save(&approvePending)
 	db.Save(&roomTalk)
+	db.Save(&wake)
 }

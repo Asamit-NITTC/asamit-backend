@@ -28,6 +28,23 @@ func InsertDummyData(db *gorm.DB) {
 
 	rfc3339FormattedCurrentTime := time.Now().Format(time.RFC3339)
 
+	convetedTime, _ := time.Parse(time.RFC3339, rfc3339FormattedCurrentTime)
+	var room = []Room{
+		{RoomID: "ohayou", WakeUpTime: convetedTime, Decription: "test"},
+	}
+
+	var roomUserLink = []RoomUsersLink{
+		{RoomRoomID: "ohayou", UserUID: "33u@2"},
+	}
+
+	var approvePending = []ApprovePendig{
+		{RoomRoomID: "ohayou", UserUID: "123bcd"},
+	}
+
+	var roomTalk = []RoomTalk{
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+	}
+
 	var targetTime = []TargetTime{
 		{UserUID: "33u@2", TargetTime: rfc3339FormattedCurrentTime},
 		{UserUID: "xyz123", TargetTime: rfc3339FormattedCurrentTime},
@@ -54,28 +71,11 @@ func InsertDummyData(db *gorm.DB) {
 		{UserUID: "321jkl", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning world!"},
 	}
 
-	convetedTime, _ := time.Parse(time.RFC3339, rfc3339FormattedCurrentTime)
-	var room = []Room{
-		{RoomID: "ohayou", WakeUpTime: convetedTime, Decription: "test"},
-	}
-
-	var roomUserLink = []RoomUsersLink{
-		{RoomRoomID: "ohayou", UserUID: "33u@2"},
-	}
-
-	var approvePending = []ApprovePendig{
-		{RoomRoomID: "ohayou", UserUID: "123bcd"},
-	}
-
-	var roomTalk = []RoomTalk{
-		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
-	}
-
 	db.Save(&users)
 	db.Save(&targetTime)
-	db.Save(&wakeData)
 	db.Save(&room)
 	db.Save(&roomUserLink)
 	db.Save(&approvePending)
 	db.Save(&roomTalk)
+	db.Save(&wakeData)
 }

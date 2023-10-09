@@ -8,7 +8,7 @@ import (
 
 type Wake struct {
 	UserUID    string `json:"uid" gorm:"size:256"`
-	RoomRoomID string
+	RoomRoomID string `gorm:"default:null"`
 	WakeUpTime string `json:"WakeUpTime"`
 	Comment    string `json:"comment"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`

@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"errors"
+	"gorm.io/gorm"
+)
 
 type RoomTalk struct {
 	RoomRoomID string `gorm:"not null"`
@@ -22,6 +25,7 @@ func InitializeRoomTaliRepo(db *gorm.DB) *RoomTalkRepo {
 
 type RoomTalkModel interface {
 	InsertComment(rt RoomTalk) error
+	GetAllTalk(roomId string) ([]RoomTalk, error)
 }
 
 func (r RoomTalkRepo) InsertComment(rt RoomTalk) error {
@@ -30,4 +34,17 @@ func (r RoomTalkRepo) InsertComment(rt RoomTalk) error {
 		return err
 	}
 	return nil
+}
+
+func (r RoomTalkRepo) GetAllTalk(roomId string) ([]RoomTalk, error) {
+	var roomTalkList []RoomTalk
+	err := r.repo.Order("updated_at").Find(&roomTalkList, "room_room_id = ?", roomId).Error
+	if err != nil {
+		return roomTalkList, err
+	}
+
+	if len(roomTalkList) == 0 {
+		return roomTalkList, errors.New("record not found.")
+	}
+	return roomTalkList, nil
 }

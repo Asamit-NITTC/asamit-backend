@@ -178,3 +178,36 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, forWritingCommentObject)
 }
+
+func (s SummitController) GetTalk(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "uid is empty."})
+		return
+	}
+	roomId := c.Query("room-id")
+	if roomId == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "room-id is empty."})
+		return
+	}
+
+	affiliateUID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	//指定されたRoomIdと所属しているRoomIdが違ったらエラーを返す
+	if affiliateUID != roomId {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Affiliation and request are different."})
+		return
+	}
+
+	roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	c.JSON(http.StatusOK, roomTalkList)
+}

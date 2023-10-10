@@ -23,6 +23,7 @@ func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.
 }
 
 type createRoomRequestBody struct {
+	HostUID     string    `json:"HostUID"`
 	MemberUID   []string  `json:"memberUID"`
 	WakeUpTime  time.Time `json:"wakeUpTime"`
 	Description string    `json:"description"`
@@ -41,6 +42,7 @@ func (s SummitController) Create(c *gin.Context) {
 	roomInfo.WakeUpTime = requestBody.WakeUpTime
 	roomInfo.Description = requestBody.Description
 
+	//ルーム作成(ユーザー関連操作なし)
 	createdRoomInfo, err := s.roomModel.CreateRoom(roomInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Can't get RoomInfo."})

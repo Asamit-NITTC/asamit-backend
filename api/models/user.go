@@ -33,6 +33,7 @@ type UserModel interface {
 	CheckExistsUserWithUIDReturnBool(uid string) (bool, error)
 	CheckInvitationStatus(uid string) (bool, error)
 	CheckAffliationStatus(uid string) (bool, error)
+	ChangeInvitationAndAffiliationStatus(uid string, invitationStatus bool, affiliationStatus bool) error
 }
 
 func (u UserRepo) GetUserInfo(uid string) (User, error) {
@@ -137,4 +138,12 @@ func (u UserRepo) CheckAffliationStatus(uid string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func (u UserRepo) ChangeInvitationAndAffiliationStatus(uid string, invitationStatus bool, affiliationStatus bool) error {
+	err := u.repo.Model(&User{}).Where("uid = ?", uid).UpdateColumns(User{InvitationStatus: invitationStatus, AffiliationStatus: affiliationStatus}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

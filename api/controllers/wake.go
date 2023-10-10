@@ -8,12 +8,13 @@ import (
 )
 
 type WakeController struct {
-	wakeModel models.WakeModel
-	userModel models.UserModel
+	wakeModel          models.WakeModel
+	userModel          models.UserModel
+	roomusersLinkModel models.RoomUsersLinkModel
 }
 
-func InitializeWakeController(w models.WakeModel, u models.UserModel) *WakeController {
-	return &WakeController{wakeModel: w, userModel: u}
+func InitializeWakeController(w models.WakeModel, u models.UserModel, r models.RoomUsersLinkModel) *WakeController {
+	return &WakeController{wakeModel: w, userModel: u, roomusersLinkModel: r}
 }
 
 func (w WakeController) Report(c *gin.Context) {
@@ -24,6 +25,15 @@ func (w WakeController) Report(c *gin.Context) {
 		return
 	}
 
+	roomId, err := w.roomusersLinkModel.GetRoomIdIfAffiliated(wakeUpInfo.UserUID)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "DB get error."})
+		return
+	}
+
+	//空でも大丈夫
+	wakeUpInfo.RoomRoomID = roomId
+
 	err = w.wakeModel.Report(wakeUpInfo)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
@@ -31,4 +41,18 @@ func (w WakeController) Report(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, wakeUpInfo)
 	return
+}
+
+func (w WakeController) GetAllReport(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "UID is empty."})
+	}
+
+	allWakeUpReport, err := w.wakeModel.GetAllReport(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+	c.JSON(http.StatusOK, allWakeUpReport)
 }

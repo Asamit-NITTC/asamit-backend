@@ -74,7 +74,7 @@ func (s SummitController) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, requestBody)
 }
 
-func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
+func (s SummitController) CheckAffiliateAndInvitationStatus(c *gin.Context) {
 	uid := c.Query("uid")
 	if uid == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Incorrect query parameter."})
@@ -128,6 +128,53 @@ func (s SummitController) CheckAffiliateAndInventionStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"roomID": "", "status": "Not using summit mode"})
 }
 
+func (s SummitController) Approve(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Bad request."})
+		return
+	}
+
+	isWatingAffiliation, err := s.approvePendingModel.CheckExists(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusBadRequest, err.Error(), "DB get error."})
+		return
+	}
+
+	if !isWatingAffiliation {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Can't find waiting list."})
+		return
+	}
+
+	roomId, err := s.approvePendingModel.GetRoomId(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	err = s.userModel.ChangeInvitationAndAffiliationStatus(uid, false, true)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Infomation delete error."})
+		return
+	}
+
+	err = s.approvePendingModel.DeletePendingRecord(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Infomation delete error."})
+		return
+	}
+
+	var roomUsersLink models.RoomUsersLink
+	roomUsersLink.RoomRoomID = roomId
+	roomUsersLink.UserUID = uid
+	err = s.roomUsersLinkModel.Insert(roomUsersLink)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
 // 時間があったらテーブル結合を用いて実装したい
 func (s SummitController) GetRoomDetailInfo(c *gin.Context) {
 	roomID := c.Query("roomID")
@@ -177,4 +224,37 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, forWritingCommentObject)
+}
+
+func (s SummitController) GetTalk(c *gin.Context) {
+	uid := c.Query("uid")
+	if uid == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "uid is empty."})
+		return
+	}
+	roomId := c.Query("room-id")
+	if roomId == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "room-id is empty."})
+		return
+	}
+
+	affiliateUID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	//指定されたRoomIdと所属しているRoomIdが違ったらエラーを返す
+	if affiliateUID != roomId {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Affiliation and request are different."})
+		return
+	}
+
+	roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	c.JSON(http.StatusOK, roomTalkList)
 }

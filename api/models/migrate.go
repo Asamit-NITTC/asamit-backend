@@ -28,32 +28,6 @@ func InsertDummyData(db *gorm.DB) {
 
 	rfc3339FormattedCurrentTime := time.Now().Format(time.RFC3339)
 
-	var targetTime = []TargetTime{
-		{UserUID: "33u@2", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "xyz123", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "789abc", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "ghi789", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "123bcd", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "lmn012", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "def345", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "hij678", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "456pqr", TargetTime: rfc3339FormattedCurrentTime},
-		{UserUID: "321jkl", TargetTime: rfc3339FormattedCurrentTime},
-	}
-
-	var wakeData = []Wake{
-		{UserUID: "33u@2", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning!"},
-		{UserUID: "xyz123", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Rise and shine!"},
-		{UserUID: "789abc", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Waking up early today."},
-		{UserUID: "ghi789", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Another day begins."},
-		{UserUID: "123bcd", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Ready to start the day."},
-		{UserUID: "lmn012", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Morning routine."},
-		{UserUID: "def345", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Feeling refreshed!"},
-		{UserUID: "hij678", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Early bird."},
-		{UserUID: "456pqr", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "A new dawn."},
-		{UserUID: "321jkl", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning world!"},
-	}
-
 	convetedTime, _ := time.Parse(time.RFC3339, rfc3339FormattedCurrentTime)
 	var room = []Room{
 		{RoomID: "ohayou", WakeUpTime: convetedTime, Decription: "test"},
@@ -69,12 +43,53 @@ func InsertDummyData(db *gorm.DB) {
 
 	var roomTalk = []RoomTalk{
 		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "おはよう"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "たのしい"},
+		{RoomRoomID: "ohayou", UserUID: "33u@2", Comment: "いいねえー"},
 	}
+
+	var targetTime = []TargetTime{
+		{UserUID: "33u@2", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "xyz123", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "789abc", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "ghi789", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "123bcd", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "lmn012", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "def345", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "hij678", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "456pqr", TargetTime: rfc3339FormattedCurrentTime},
+		{UserUID: "321jkl", TargetTime: rfc3339FormattedCurrentTime},
+	}
+
+	var wakeData = []Wake{
+		{UserUID: "33u@2", RoomRoomID: "ohayou", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning!"},
+		{UserUID: "xyz123", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Rise and shine!"},
+		{UserUID: "789abc", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Waking up early today."},
+		{UserUID: "ghi789", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Another day begins."},
+		{UserUID: "123bcd", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Ready to start the day."},
+		{UserUID: "lmn012", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Morning routine."},
+		{UserUID: "def345", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Feeling refreshed!"},
+		{UserUID: "hij678", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Early bird."},
+		{UserUID: "456pqr", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "A new dawn."},
+		{UserUID: "321jkl", RoomRoomID: "", WakeUpTime: rfc3339FormattedCurrentTime, Comment: "Good morning world!"},
+	}
+
 	db.Save(&users)
 	db.Save(&targetTime)
-	db.Save(&wakeData)
 	db.Save(&room)
 	db.Save(&roomUserLink)
 	db.Save(&approvePending)
 	db.Save(&roomTalk)
+	db.Save(&wakeData)
 }

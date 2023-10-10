@@ -38,15 +38,18 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		userModel := models.InitializeUserRepo(db)
 		targetTimeController := controllers.InitalizeTargetTimeController(targetTimeModel, userModel)
 		targetTime.PUT("/set", middleware.AuthHandler(), targetTimeController.Set)
-		targetTime.GET("/get", middleware.AuthHandler(), targetTimeController.Get)
+		targetTime.GET("/get", targetTimeController.Get)
 	}
 
 	wake := r.Group("wake")
 	{
 		wakeModel := models.InitializeWakeRepo(db)
 		userModel := models.InitializeUserRepo(db)
-		wakeController := controllers.InitializeWakeController(wakeModel, userModel)
+		roomUsersLinkRepo := models.InitializeRoomUsersLinkRepo(db)
+		wakeController := controllers.InitializeWakeController(wakeModel, userModel, roomUsersLinkRepo)
 		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
+		wake.GET("/get-all-report", wakeController.GetAllReport)
+
 	}
 
 	room := r.Group("summit")
@@ -59,9 +62,11 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		cloudStorageOriginalWebModel := webstorage.InitializeCloudStorageOriginalWebRepo(ctx, bucket)
 		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel, approvePendingModel, roomTalkModel, cloudStorageOriginalWebModel)
 		room.POST("/create", middleware.AuthHandler(), roomController.Create)
-		room.GET("/room-affiliation-status", middleware.AuthHandler(), roomController.CheckAffiliateAndInventionStatus)
+		room.GET("/room-affiliation-status", middleware.AuthHandler(), roomController.CheckAffiliateAndInvitationStatus)
 		room.GET("/room-detail-info", middleware.AuthHandler(), roomController.GetRoomDetailInfo)
 		room.POST("/record-talk", middleware.AuthHandler(), roomController.RecordTalk)
+		room.GET("/room-talk", middleware.AuthHandler(), roomController.GetTalk)
+		room.PATCH("/approve", roomController.Approve)
 	}
 	return r
 }

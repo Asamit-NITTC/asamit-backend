@@ -49,6 +49,23 @@ func (s SummitController) Create(c *gin.Context) {
 		return
 	}
 
+	//ホストは条件なしにルームに入れる
+	//存在確認・ステータス変更
+	hostUID := requestBody.HostUID
+	existUID, err := s.userModel.CheckExistsUserWithUIDReturnBool(hostUID)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Can't get UID."})
+		return
+	}
+	if !existUID {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "User not found."})
+	}
+	err = s.userModel.ChangeInvitationAndAffiliationStatus(hostUID, false, true)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+
 	for _, uid := range requestBody.MemberUID {
 		existUID, err := s.userModel.CheckExistsUserWithUIDReturnBool(uid)
 		if err != nil {

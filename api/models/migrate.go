@@ -8,8 +8,8 @@ import (
 )
 
 func MigrateDB(db *gorm.DB) {
-	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePendig{}, &RoomTalk{})
-	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePendig{}, &RoomTalk{})
+	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePending{}, &RoomTalk{})
+	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePending{}, &RoomTalk{})
 }
 
 func InsertDummyData(db *gorm.DB) {
@@ -37,7 +37,7 @@ func InsertDummyData(db *gorm.DB) {
 		{RoomRoomID: "ohayou", UserUID: "33u@2"},
 	}
 
-	var approvePending = []ApprovePendig{
+	var approvePending = []ApprovePending{
 		{RoomRoomID: "ohayou", UserUID: "123bcd"},
 	}
 

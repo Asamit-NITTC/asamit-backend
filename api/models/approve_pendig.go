@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type ApprovePendig struct {
+type ApprovePending struct {
 	RoomRoomID string `gorm:"primaryKey"`
 	UserUID    string `gorm:"primaryKey"`
 	User       User   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -24,11 +24,11 @@ type ApprovePendingModel interface {
 	CheckExists(uid string) (bool, error)
 	DeletePendingRecord(uid string) error
 	GetRoomId(uid string) (string, error)
-	InsertApprovePendingUserList(ap []ApprovePendig) error
+	InsertApprovePendingUserList(ap []ApprovePending) error
 }
 
 func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {
-	var approvePending ApprovePendig
+	var approvePending ApprovePending
 	err := a.repo.Find(&approvePending, "user_uid = ?", uid).Error
 	if err != nil {
 		return "", err
@@ -37,7 +37,7 @@ func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {
 }
 
 func (a ApprovePendigRepo) CheckExists(uid string) (bool, error) {
-	var approvePending ApprovePendig
+	var approvePending ApprovePending
 	err := a.repo.Find(&approvePending, "user_uid = ?", uid).Error
 	if err != nil {
 		return false, err
@@ -46,7 +46,7 @@ func (a ApprovePendigRepo) CheckExists(uid string) (bool, error) {
 }
 
 func (a ApprovePendigRepo) DeletePendingRecord(uid string) error {
-	err := a.repo.Delete(&ApprovePendig{}, "user_uid = ?", uid).Error
+	err := a.repo.Delete(&ApprovePending{}, "user_uid = ?", uid).Error
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (a ApprovePendigRepo) DeletePendingRecord(uid string) error {
 }
 
 func (a ApprovePendigRepo) GetRoomId(uid string) (string, error) {
-	var approvePendingInfo ApprovePendig
+	var approvePendingInfo ApprovePending
 	err := a.repo.Find(&approvePendingInfo, "user_uid = ?", uid).Error
 	if err != nil {
 		return "", err
@@ -62,7 +62,7 @@ func (a ApprovePendigRepo) GetRoomId(uid string) (string, error) {
 	return approvePendingInfo.RoomRoomID, nil
 }
 
-func (a ApprovePendigRepo) InsertApprovePendingUserList(ap []ApprovePendig) error {
+func (a ApprovePendigRepo) InsertApprovePendingUserList(ap []ApprovePending) error {
 	err := a.repo.Create(&ap).Error
 	if err != nil {
 		return err

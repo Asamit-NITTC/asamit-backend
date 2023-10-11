@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"fmt"
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-gonic/gin"
@@ -77,8 +78,8 @@ func (s SummitController) Create(c *gin.Context) {
 		return
 	}
 
-	var approvePendingUserTmp models.ApprovePendig
-	var approvePendingUserList []models.ApprovePendig
+	var approvePendingUserTmp models.ApprovePending
+	var approvePendingUserList []models.ApprovePending
 
 	for _, uid := range requestBody.MemberUID {
 		//ユーザー登録されているか確認する
@@ -100,6 +101,8 @@ func (s SummitController) Create(c *gin.Context) {
 		}
 
 		if isAffiliated {
+			fmt.Println("koko")
+			fmt.Println(uid)
 			c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": "Already belongs to the room."})
 			return
 		}

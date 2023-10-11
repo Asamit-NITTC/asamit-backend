@@ -196,7 +196,7 @@ func (s SummitController) Approve(c *gin.Context) {
 	}
 
 	if !isWatingAffiliation {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Can't find waiting list."})
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Can't find pending list."})
 		return
 	}
 

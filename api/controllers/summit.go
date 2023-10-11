@@ -66,28 +66,60 @@ func (s SummitController) Create(c *gin.Context) {
 		return
 	}
 
+	//ホストを所属させる
+	var roomUserLink models.RoomUsersLink
+	roomUserLink.RoomRoomID = createdRoomInfo.RoomID
+	roomUserLink.UserUID = hostUID
+
+	err = s.roomUsersLinkModel.Insert(roomUserLink)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+
+	var approvePendingUserTmp models.ApprovePendig
+	var approvePendingUserList []models.ApprovePendig
+
 	for _, uid := range requestBody.MemberUID {
+		//ユーザー登録されているか確認する
 		existUID, err := s.userModel.CheckExistsUserWithUIDReturnBool(uid)
 		if err != nil {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Can't get UID."})
 			return
 		}
-
 		if !existUID {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusNotFound, "There are unregistered users.", "There are unregistered users."})
 			return
 		}
 
-		//中間テーブル書き込み用
-		var roomUsersLink models.RoomUsersLink
-		roomUsersLink.RoomRoomID = createdRoomInfo.RoomID
-		roomUsersLink.UserUID = uid
+		//既にどこかのルームに所属していないか確認する
+		isAffiliated, err := s.approvePendingModel.CheckExists(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
 
-		err = s.roomUsersLinkModel.Insert(roomUsersLink)
+		if isAffiliated {
+			c.AbortWithStatusJSON(http.StatusConflict, gin.H{"error": "Already belongs to the room."})
+			return
+		}
+
+		//for後に承認待ちテーブルに一気に書き込む用の配列
+		approvePendingUserTmp.RoomRoomID = createdRoomInfo.RoomID
+		approvePendingUserTmp.UserUID = uid
+		approvePendingUserList = append(approvePendingUserList, approvePendingUserTmp)
+
+		err = s.userModel.ChangeInvitationAndAffiliationStatus(uid, true, false)
 		if err != nil {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
 			return
 		}
+	}
+
+	err = s.approvePendingModel.InsertApprovePendingUserList(approvePendingUserList)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
 	}
 
 	c.JSON(http.StatusOK, requestBody)

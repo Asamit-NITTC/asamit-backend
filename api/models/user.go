@@ -141,7 +141,7 @@ func (u UserRepo) CheckAffliationStatus(uid string) (bool, error) {
 }
 
 func (u UserRepo) ChangeInvitationAndAffiliationStatus(uid string, invitationStatus bool, affiliationStatus bool) error {
-	err := u.repo.Model(&User{}).Where("uid = ?", uid).UpdateColumns(User{InvitationStatus: invitationStatus, AffiliationStatus: affiliationStatus}).Error
+	err := u.repo.Model(User{}).Where("uid = ?", uid).Updates(map[string]interface{}{"InvitationStatus": invitationStatus, "AffiliationStatus": affiliationStatus}).Error
 	if err != nil {
 		return err
 	}

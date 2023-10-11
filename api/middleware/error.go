@@ -26,7 +26,7 @@ func ErrorHandler() gin.HandlerFunc {
 				//本番環境ではセキュリティの関係上簡単なエラーだけを表示できるように
 				apierror := err.Meta.(controllers.APIError)
 				c.AbortWithStatusJSON(apierror.StatusCode, gin.H{
-					"error": apierror.ErrorMessage,
+					"error": apierror.ProductionErrorMessage,
 				})
 
 			}

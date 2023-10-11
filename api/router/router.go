@@ -61,7 +61,7 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		roomTalkModel := models.InitializeRoomTaliRepo(db)
 		cloudStorageOriginalWebModel := webstorage.InitializeCloudStorageOriginalWebRepo(ctx, bucket)
 		roomController := controllers.InitailizeRoomController(roomModel, userModel, roomusersLinkModel, approvePendingModel, roomTalkModel, cloudStorageOriginalWebModel)
-		room.POST("/create", roomController.Create)
+		room.POST("/create", middleware.AuthHandler(), roomController.Create)
 		room.GET("/room-affiliation-status", middleware.AuthHandler(), roomController.CheckAffiliateAndInvitationStatus)
 		room.GET("/room-detail-info", middleware.AuthHandler(), roomController.GetRoomDetailInfo)
 		room.POST("/record-talk", middleware.AuthHandler(), roomController.RecordTalk)

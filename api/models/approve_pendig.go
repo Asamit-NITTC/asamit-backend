@@ -42,6 +42,10 @@ func (a ApprovePendigRepo) CheckExists(uid string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	if approvePending.RoomRoomID == "" {
+		return false, nil
+	}
 	return true, nil
 }
 

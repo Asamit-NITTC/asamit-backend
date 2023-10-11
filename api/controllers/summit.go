@@ -39,7 +39,7 @@ func (s SummitController) Create(c *gin.Context) {
 	//DBに入れる各種情報の書き込み
 	var roomInfo models.Room
 	roomInfo.WakeUpTime = requestBody.WakeUpTime
-	roomInfo.Decription = requestBody.Description
+	roomInfo.Description = requestBody.Description
 
 	createdRoomInfo, err := s.roomModel.CreateRoom(roomInfo)
 	if err != nil {

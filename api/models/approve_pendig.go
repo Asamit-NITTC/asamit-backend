@@ -24,6 +24,7 @@ type ApprovePendingModel interface {
 	CheckExists(uid string) (bool, error)
 	DeletePendingRecord(uid string) error
 	GetRoomId(uid string) (string, error)
+	InsertApprovePendingUserList(ap []ApprovePendig) error
 }
 
 func (a ApprovePendigRepo) ReturnRoomIdIfRegisterd(uid string) (string, error) {
@@ -59,4 +60,12 @@ func (a ApprovePendigRepo) GetRoomId(uid string) (string, error) {
 		return "", err
 	}
 	return approvePendingInfo.RoomRoomID, nil
+}
+
+func (a ApprovePendigRepo) InsertApprovePendingUserList(ap []ApprovePendig) error {
+	err := a.repo.Create(&ap).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

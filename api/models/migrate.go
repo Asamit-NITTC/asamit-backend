@@ -30,7 +30,7 @@ func InsertDummyData(db *gorm.DB) {
 
 	convetedTime, _ := time.Parse(time.RFC3339, rfc3339FormattedCurrentTime)
 	var room = []Room{
-		{RoomID: "ohayou", WakeUpTime: convetedTime, Decription: "test"},
+		{RoomID: "ohayou", WakeUpTime: convetedTime, Description: "test"},
 	}
 
 	var roomUserLink = []RoomUsersLink{

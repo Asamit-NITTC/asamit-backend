@@ -10,7 +10,7 @@ import (
 type Room struct {
 	RoomID     string `gorm:"primaryKey;size:256"`
 	WakeUpTime time.Time
-	Decription string
+	Description string
 }
 
 type RoomRepo struct {

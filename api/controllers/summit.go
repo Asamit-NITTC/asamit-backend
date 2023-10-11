@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"io/ioutil"
 	"net/http"
 	"time"
 
 	"fmt"
+
 	"github.com/Asamit-NITTC/asamit-backend-test/models"
 	"github.com/Asamit-NITTC/asamit-backend-test/webstorage"
 	"github.com/gin-gonic/gin"
@@ -257,8 +259,12 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 	morningActivityImageFile, _ := c.FormFile("image")
 	//下でバリデーションしているためあえてerrを受け取らない
 	//ファイルサイズが0ならそもそもファイル関連の処理が走らないから安全
+	//byteContainer, err := ioutil.ReadAll(fileContent)
+	fmt.Println("ooo")
+	fmt.Println(morningActivityImageFile.Size)
+	fmt.Println("ooo")
 
-	if morningActivityImageFile.Size != 0 {
+	if morningActivityImageFile.Filename != "" {
 		morningActivityImage, err := morningActivityImageFile.Open()
 		if err != nil {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Image processing error."})

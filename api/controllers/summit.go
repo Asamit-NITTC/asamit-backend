@@ -23,7 +23,7 @@ func InitailizeRoomController(r models.RoomModel, u models.UserModel, ru models.
 }
 
 type createRoomRequestBody struct {
-	HostUID     string    `json:"HostUID"`
+	HostUID     string    `json:"hostUID"`
 	MemberUID   []string  `json:"memberUID"`
 	WakeUpTime  time.Time `json:"wakeUpTime"`
 	Description string    `json:"description"`

@@ -15,7 +15,7 @@ func ErrorHandler() gin.HandlerFunc {
 		if err != nil {
 
 			//デバッグ時には受け取ったエラーを生で受け取れるように
-			if os.Getenv("MODE") == "DEBUG" {
+			if os.Getenv("MIDDLEWARE_MODE") == "DEBUG" {
 				log.Println(err)
 				apierror := err.Meta.(controllers.APIError)
 				log.Println(apierror.ProductionErrorMessage)

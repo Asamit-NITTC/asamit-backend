@@ -6,7 +6,7 @@ import (
 )
 
 type RoomTalk struct {
-	RoomRoomID string `gorm:"not null"`
+	RoomRoomID string
 	UserUID    string `gorm:"not null"`
 	Comment    string `gorm:"not null"`
 	ImageURL   string

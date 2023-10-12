@@ -52,7 +52,7 @@ func (r RoomTalkRepo) GetAllTalk(roomId string) ([]RoomTalk, error) {
 
 func (r RoomTalkRepo) GetPersonalTalk(uid string) ([]RoomTalk, error) {
 	var roomTalkList []RoomTalk
-	err := r.repo.Order("updated_at").Find(&roomTalkList, "user_uid = ?", uid).Error
+	err := r.repo.Where("user_uid = ?", uid).Where("room_room_id is null").Find(&roomTalkList).Error
 	if err != nil {
 		return roomTalkList, err
 	}

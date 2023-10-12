@@ -8,7 +8,7 @@ import (
 )
 
 func MigrateDB(db *gorm.DB) {
-	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePending{}, &RoomTalk{})
+	//	db.Migrator().DropTable(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePending{}, &RoomTalk{})
 	db.AutoMigrate(&User{}, &TargetTime{}, &Wake{}, &Room{}, &RoomUsersLink{}, &ApprovePending{}, &RoomTalk{})
 }
 

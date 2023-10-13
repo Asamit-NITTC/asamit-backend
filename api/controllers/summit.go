@@ -320,3 +320,18 @@ func (s SummitController) GetTalk(c *gin.Context) {
 
 	c.JSON(http.StatusOK, personalTalkList)
 }
+
+func (s SummitController) GetRoomUserLists(c *gin.Context) {
+	roomId := c.Query("room-id")
+	if roomId == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "UID is empty."})
+		return
+	}
+	roomBelongingUserList, err := s.roomUsersLinkModel.GetRoomBelongingUser(roomId)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+
+	c.JSON(http.StatusOK, roomBelongingUserList)
+}

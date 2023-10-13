@@ -68,6 +68,7 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		room.GET("/room-talk", middleware.AuthHandler(), roomController.GetTalk)
 		room.PATCH("/approve", middleware.AuthHandler(), roomController.Approve)
 		room.GET("/get-room-user-lists", middleware.AuthHandler(), roomController.GetRoomUserLists)
+		room.PUT("/change-mission", middleware.AuthHandler(), roomController.ChangeMission)
 	}
 	return r
 }

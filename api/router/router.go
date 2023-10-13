@@ -49,7 +49,7 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		wakeController := controllers.InitializeWakeController(wakeModel, userModel, roomUsersLinkRepo)
 		wake.POST("/report", middleware.AuthHandler(), wakeController.Report)
 		wake.GET("/get-all-report", middleware.AuthHandler(), wakeController.GetAllReport)
-		wake.GET("/get-all-report/no-uid", middleware.AuthHandler(), wakeController.GetAllReport)
+		wake.GET("/get-all-report/no-uid", middleware.AuthHandler(), wakeController.GetAllReportNoUid)
 
 	}
 

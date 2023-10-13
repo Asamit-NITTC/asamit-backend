@@ -27,6 +27,7 @@ func InitializeWakeRepo(repo *gorm.DB) *WakeRepo {
 type WakeModel interface {
 	Report(wa Wake) error
 	GetAllReport(uid string) ([]Wake, error)
+	GetAllReportNoUID() ([]Wake, error)
 }
 
 func (w WakeRepo) Report(wa Wake) error {
@@ -48,4 +49,13 @@ func (w WakeRepo) GetAllReport(uid string) ([]Wake, error) {
 		return allWakeUpReport, err
 	}
 	return allWakeUpReport, nil
+}
+
+func (w WakeRepo) GetAllReportNoUID() ([]Wake, error) {
+	var allWakeUpReportNoUID []Wake
+	err := w.repo.Find(&allWakeUpReportNoUID).Error
+	if err != nil {
+		return allWakeUpReportNoUID, err
+	}
+	return allWakeUpReportNoUID, nil
 }

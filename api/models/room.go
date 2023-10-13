@@ -8,9 +8,10 @@ import (
 )
 
 type Room struct {
-	RoomID     string `gorm:"primaryKey;size:256"`
-	WakeUpTime time.Time
+	RoomID      string    `gorm:"primaryKey;size:256"`
+	WakeUpTime  time.Time `gorm:"not null"`
 	Description string
+	Mission     string `gorm:"not null"`
 }
 
 type RoomRepo struct {

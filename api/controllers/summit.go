@@ -338,3 +338,13 @@ func (s SummitController) GetRoomUserLists(c *gin.Context) {
 
 	c.JSON(http.StatusOK, roomBelongingUserList)
 }
+
+func (s SummitController) ChangeMission(c *gin.Context) {
+	var changeTargetMissionInfo models.Room
+	err := s.roomModel.ChangeMission(changeTargetMissionInfo)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+	c.JSON(http.StatusOK, changeTargetMissionInfo)
+}

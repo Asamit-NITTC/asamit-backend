@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -25,6 +26,7 @@ func InitializeRoomRepo(db *gorm.DB) *RoomRepo {
 type RoomModel interface {
 	CreateRoom(ro Room) (Room, error)
 	GetRoomDetailInfo(roomID string) (Room, error)
+	ChangeMission(ro Room) error
 }
 
 func (r RoomRepo) CreateRoom(ro Room) (Room, error) {
@@ -56,4 +58,15 @@ func (r RoomRepo) GetRoomDetailInfo(roomID string) (Room, error) {
 	}
 
 	return roomInfo, nil
+}
+
+func (r RoomRepo) ChangeMission(ro Room) error {
+	if ro.RoomID == "" || ro.Mission == "" {
+		return errors.New("roomId or mission is empty.")
+	}
+	err := r.repo.Model(&Room{}).Where("room_id = ?", ro.RoomID).Update("mission", ro.Mission).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

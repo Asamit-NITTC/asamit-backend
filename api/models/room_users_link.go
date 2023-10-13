@@ -20,6 +20,7 @@ func InitializeRoomUsersLinkRepo(db *gorm.DB) *RoomUsersLinkRepo {
 type RoomUsersLinkModel interface {
 	Insert(ru RoomUsersLink) error
 	GetRoomIdIfAffiliated(uid string) (string, error)
+	GetRoomBelongingUser(uid string) ([]RoomUsersLink, error)
 }
 
 func (r RoomUsersLinkRepo) Insert(ru RoomUsersLink) error {
@@ -37,4 +38,13 @@ func (r RoomUsersLinkRepo) GetRoomIdIfAffiliated(uid string) (string, error) {
 		return "", err
 	}
 	return roomUserLinkInfo.RoomRoomID, nil
+}
+
+func (r RoomUsersLinkRepo) GetRoomBelongingUser(roomId string) ([]RoomUsersLink, error) {
+	var roomUserLinkInfo []RoomUsersLink
+	err := r.repo.Find(&roomUserLinkInfo, "room_room_id = ?", roomId).Error
+	if err != nil {
+		return roomUserLinkInfo, err
+	}
+	return roomUserLinkInfo, nil
 }

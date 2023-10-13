@@ -30,6 +30,10 @@ type createRoomRequestBody struct {
 	Description string    `json:"description"`
 }
 
+type inviteUserRequestBody struct {
+	MemberUID []string `json:"memberUID"`
+}
+
 func (s SummitController) Create(c *gin.Context) {
 	var requestBody createRoomRequestBody
 	err := c.ShouldBindJSON(&requestBody)
@@ -334,4 +338,22 @@ func (s SummitController) GetRoomUserLists(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, roomBelongingUserList)
+}
+
+func (s SummitController) Invite(c *gin.Context) {
+	var invitedUserList inviteUserRequestBody
+	err := c.ShouldBindJSON(&invitedUserList)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "JSON parse error."})
+		return
+	}
+
+	for _, uid := range invitedUserList.MemberUID {
+		existUID, err := s.userModel.CheckExistsUserWithUIDReturnBool(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+	}
 }

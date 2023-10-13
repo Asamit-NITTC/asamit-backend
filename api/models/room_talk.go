@@ -6,7 +6,7 @@ import (
 )
 
 type RoomTalk struct {
-	RoomRoomID string `gorm:"not null"`
+	RoomRoomID string `gorm:"default:null"`
 	UserUID    string `gorm:"not null"`
 	Comment    string `gorm:"not null"`
 	ImageURL   string
@@ -26,6 +26,7 @@ func InitializeRoomTaliRepo(db *gorm.DB) *RoomTalkRepo {
 type RoomTalkModel interface {
 	InsertComment(rt RoomTalk) error
 	GetAllTalk(roomId string) ([]RoomTalk, error)
+	GetPersonalTalk(uid string) ([]RoomTalk, error)
 }
 
 func (r RoomTalkRepo) InsertComment(rt RoomTalk) error {
@@ -39,6 +40,19 @@ func (r RoomTalkRepo) InsertComment(rt RoomTalk) error {
 func (r RoomTalkRepo) GetAllTalk(roomId string) ([]RoomTalk, error) {
 	var roomTalkList []RoomTalk
 	err := r.repo.Order("updated_at").Find(&roomTalkList, "room_room_id = ?", roomId).Error
+	if err != nil {
+		return roomTalkList, err
+	}
+
+	if len(roomTalkList) == 0 {
+		return roomTalkList, errors.New("record not found.")
+	}
+	return roomTalkList, nil
+}
+
+func (r RoomTalkRepo) GetPersonalTalk(uid string) ([]RoomTalk, error) {
+	var roomTalkList []RoomTalk
+	err := r.repo.Where("user_uid = ?", uid).Where("room_room_id is null").Find(&roomTalkList).Error
 	if err != nil {
 		return roomTalkList, err
 	}

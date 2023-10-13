@@ -67,6 +67,7 @@ func NewRouter(db *gorm.DB, ctx context.Context, bucket *storage.BucketHandle) *
 		room.POST("/record-talk", middleware.AuthHandler(), roomController.RecordTalk)
 		room.GET("/room-talk", middleware.AuthHandler(), roomController.GetTalk)
 		room.PATCH("/approve", middleware.AuthHandler(), roomController.Approve)
+		room.GET("/get-room-user-lists", middleware.AuthHandler(), roomController.GetRoomUserLists)
 	}
 	return r
 }

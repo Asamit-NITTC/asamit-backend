@@ -24,6 +24,7 @@ func InsertDummyData(db *gorm.DB) {
 		{UID: "def345", Sub: "yza678", Name: "Grace", Point: 36, Duration: 4, InvitationStatus: false, AffiliationStatus: false},
 		{UID: "hij678", Sub: "bcd901", Name: "Hank", Point: 25, Duration: 10, InvitationStatus: false, AffiliationStatus: false},
 		{UID: "123bcd", Sub: "efg234", Name: "Ivy", Point: 42, Duration: 3, InvitationStatus: true, AffiliationStatus: false},
+		{UID: "gettest", Sub: "ef4", Name: "Iv", Point: 42, Duration: 3, InvitationStatus: false, AffiliationStatus: true},
 	}
 	rfc3339FormattedCurrentTime := time.Now().Format(time.RFC3339)
 
@@ -34,6 +35,7 @@ func InsertDummyData(db *gorm.DB) {
 
 	var roomUserLink = []RoomUsersLink{
 		{RoomRoomID: "ohayou", UserUID: "33u@2"},
+		{RoomRoomID: "ohayou", UserUID: "gettest"},
 	}
 
 	var approvePending = []ApprovePending{

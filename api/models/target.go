@@ -40,7 +40,7 @@ func (t TargetTimeRepo) Set(wt TargetTime) error {
 
 func (t TargetTimeRepo) Get(uid string) (string, error) {
 	var targetTimeInfo TargetTime
-	err := t.repo.First(&targetTimeInfo).Error
+	err := t.repo.Find(&targetTimeInfo, "user_uid = ?", uid).Error
 	if err != nil {
 		return "", err
 	}

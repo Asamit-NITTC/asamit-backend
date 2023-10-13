@@ -9,10 +9,10 @@ import (
 )
 
 type Room struct {
-	RoomID      string    `gorm:"primaryKey;size:256"`
+	RoomID      string    `json:"roomID" gorm:"primaryKey;size:256"`
 	WakeUpTime  time.Time `gorm:"not null"`
 	Description string
-	Mission     string `gorm:"not null"`
+	Mission     string `json:"mission" gorm:"not null"`
 }
 
 type RoomRepo struct {

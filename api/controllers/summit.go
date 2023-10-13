@@ -43,6 +43,9 @@ func (s SummitController) Create(c *gin.Context) {
 	roomInfo.WakeUpTime = requestBody.WakeUpTime
 	roomInfo.Description = requestBody.Description
 
+	//デフォルトのミッションを書き込む
+	roomInfo.Mission = "今日の天気予報の写真を撮影せよ！"
+
 	//ルーム作成(ユーザー関連操作なし)
 	createdRoomInfo, err := s.roomModel.CreateRoom(roomInfo)
 	if err != nil {

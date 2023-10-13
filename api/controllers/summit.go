@@ -283,32 +283,40 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 func (s SummitController) GetTalk(c *gin.Context) {
 	uid := c.Query("uid")
 	if uid == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "uid is empty."})
-		return
+		c.JSON(http.StatusBadRequest, gin.H{"error": "UID and roomId are empty."})
 	}
 	roomId := c.Query("room-id")
-	if roomId == "" {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "room-id is empty."})
-		return
+	//個人・サミット両方の機能を実装するため片方が空だからすぐにエラーを返すわけじゃない
+
+	if roomId != "" {
+		//サミットの振り返り取得
+		affiliateUID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+		//指定されたRoomIdと所属しているRoomIdが違ったらエラーを返す
+		if affiliateUID != roomId {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Affiliation and request are different."})
+			return
+		}
+
+		roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)
+		if err != nil {
+			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+			return
+		}
+
+		c.JSON(http.StatusOK, roomTalkList)
 	}
 
-	affiliateUID, err := s.roomUsersLinkModel.GetRoomIdIfAffiliated(uid)
+	//個人の記録取得
+	personalTalkList, err := s.roomTalkModel.GetPersonalTalk(uid)
 	if err != nil {
 		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
 		return
 	}
 
-	//指定されたRoomIdと所属しているRoomIdが違ったらエラーを返す
-	if affiliateUID != roomId {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Affiliation and request are different."})
-		return
-	}
-
-	roomTalkList, err := s.roomTalkModel.GetAllTalk(roomId)
-	if err != nil {
-		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
-		return
-	}
-
-	c.JSON(http.StatusOK, roomTalkList)
+	c.JSON(http.StatusOK, personalTalkList)
 }

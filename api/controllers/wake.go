@@ -56,3 +56,12 @@ func (w WakeController) GetAllReport(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, allWakeUpReport)
 }
+
+func (w WakeController) GetAllReportNoUid(c *gin.Context) {
+	allWakeUpReportNoUID, err := w.wakeModel.GetAllReportNoUID()
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB get error."})
+		return
+	}
+	c.JSON(http.StatusOK, allWakeUpReportNoUID)
+}

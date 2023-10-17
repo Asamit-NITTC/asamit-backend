@@ -260,11 +260,8 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 	//下でバリデーションしているためあえてerrを受け取らない
 	//ファイルサイズが0ならそもそもファイル関連の処理が走らないから安全
 	//byteContainer, err := ioutil.ReadAll(fileContent)
-	fmt.Println("ooo")
-	fmt.Println(morningActivityImageFile.Size)
-	fmt.Println("ooo")
 
-	if morningActivityImageFile.Filename != "" {
+	if morningActivityImageFile != nil {
 		morningActivityImage, err := morningActivityImageFile.Open()
 		if err != nil {
 			c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "Image processing error."})

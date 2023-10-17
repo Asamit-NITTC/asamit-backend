@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -260,6 +259,7 @@ func (s SummitController) RecordTalk(c *gin.Context) {
 	//下でバリデーションしているためあえてerrを受け取らない
 	//ファイルサイズが0ならそもそもファイル関連の処理が走らないから安全
 	//byteContainer, err := ioutil.ReadAll(fileContent)
+	fmt.Println(morningActivityImageFile)
 
 	if morningActivityImageFile != nil {
 		morningActivityImage, err := morningActivityImageFile.Open()

@@ -43,6 +43,9 @@ func (s SummitController) Create(c *gin.Context) {
 	roomInfo.WakeUpTime = requestBody.WakeUpTime
 	roomInfo.Description = requestBody.Description
 
+	//デフォルトのミッションを書き込む
+	roomInfo.Mission = "今日の天気予報の写真を撮影せよ！"
+
 	//ルーム作成(ユーザー関連操作なし)
 	createdRoomInfo, err := s.roomModel.CreateRoom(roomInfo)
 	if err != nil {
@@ -334,4 +337,19 @@ func (s SummitController) GetRoomUserLists(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, roomBelongingUserList)
+}
+
+func (s SummitController) ChangeMission(c *gin.Context) {
+	var changeTargetMissionInfo models.Room
+	err := c.ShouldBindJSON(&changeTargetMissionInfo)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "JSON parse error."})
+		return
+	}
+	err = s.roomModel.ChangeMission(changeTargetMissionInfo)
+	if err != nil {
+		c.Error(err).SetType(gin.ErrorTypePublic).SetMeta(APIError{http.StatusInternalServerError, err.Error(), "DB write error."})
+		return
+	}
+	c.JSON(http.StatusOK, changeTargetMissionInfo)
 }
